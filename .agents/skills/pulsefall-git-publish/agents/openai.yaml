@@ -1,0 +1,4 @@
+interface:
+  display_name: "Pulsefall Git Publish"
+  short_description: "Safely commit and push Pulsefall changes"
+  default_prompt: "Inspect the Pulsefall repository, commit the requested changes, and push them safely when explicitly authorized."
