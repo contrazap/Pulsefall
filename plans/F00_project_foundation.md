@@ -1,9 +1,9 @@
 # F00 — Project foundation
 
-- Status: Planned
+- Status: Complete
 - Roadmap dependency: None
 - Created: 2026-08-30
-- Completed: —
+- Completed: 2026-08-30
 
 ## Objective
 
@@ -52,12 +52,12 @@ Create the minimal runnable Godot 4.7.1 project foundation for Pulsefall: a conf
 
 ## Acceptance criteria
 
-- [ ] `project.godot` opens as a Godot 4.x project and identifies the exact installed version used for verification as `4.7.1.stable.official.a13da4feb` in the recorded evidence.
-- [ ] Running the project starts `scenes/main.tscn` without parser, missing-resource, or runtime errors.
-- [ ] `move_up`, `move_down`, `move_left`, and `move_right` exist and each accepts both the specified WASD key and corresponding arrow key.
-- [ ] The main scene visibly presents a dark game background plus readable health, level, and XP placeholder labels in a HUD layer.
-- [ ] The HUD layout remains anchored to the viewport when the window is resized during the focused manual check.
-- [ ] No F01-or-later gameplay behavior or third-party dependency is introduced.
+- [x] `project.godot` opens as a Godot 4.x project and identifies the exact installed version used for verification as `4.7.1.stable.official.a13da4feb` in the recorded evidence.
+- [x] Running the project starts `scenes/main.tscn` without parser, missing-resource, or runtime errors.
+- [x] `move_up`, `move_down`, `move_left`, and `move_right` exist and each accepts both the specified WASD key and corresponding arrow key.
+- [x] The main scene visibly presents a dark game background plus readable health, level, and XP placeholder labels in a HUD layer.
+- [x] The HUD layout remains anchored to the viewport when the window is resized during the focused manual check.
+- [x] No F01-or-later gameplay behavior or third-party dependency is introduced.
 
 ## Verification plan
 
@@ -83,10 +83,12 @@ Create the minimal runnable Godot 4.7.1 project foundation for Pulsefall: a conf
 
 ## Completion notes
 
-Fill this in during implementation:
-
-- Actual files changed:
+- Actual files changed: added `.gitignore`, `project.godot`, `scenes/main.tscn`, `tests/verify_f00.gd`, and its Godot-generated `.uid` sidecar; updated this plan and `PROGRESS.md`. No runtime script was needed.
 - Commands/tests and results:
-- Manual checks performed:
-- Deviations from plan:
-- Remaining risks or follow-up:
+  - `& 'C:\MyFiles\Godot\Godot_v4.7.1-stable_win64_console.exe' --version` — exit 0; `4.7.1.stable.official.a13da4feb`.
+  - `& 'C:\MyFiles\Godot\Godot_v4.7.1-stable_win64_console.exe' --headless --editor --path . --quit` — exit 0; project imported and editor scan completed without parser or resource errors.
+  - `& 'C:\MyFiles\Godot\Godot_v4.7.1-stable_win64_console.exe' --headless --path . --script res://tests/verify_f00.gd` — exit 0; confirmed the main-scene setting, viewport defaults, all eight physical key bindings, dark background, full-viewport HUD anchors, and placeholder labels.
+  - `& 'C:\MyFiles\Godot\Godot_v4.7.1-stable_win64_console.exe' --headless --path . --quit-after 2` — exit 0; configured main scene smoke-ran without runtime errors.
+- Manual checks performed: launched rendered project captures at the configured 1152×648 window and a requested 800×450 resized window, then visually inspected both captured frames. The dark shell and health, level, and XP HUD remained separated, readable, and attached to the intended edges. The first resized pass exposed colliding minimum widths; those were removed and both sizes were rechecked successfully.
+- Deviations from plan: added a focused repository verification script so input-map and HUD-shell requirements can be rerun. Rendered frame inspection replaced manual keyboard presses; the script verified both physical bindings for every action directly through Godot's `InputMap`.
+- Remaining risks or follow-up: none within F00. The static HUD values are intentionally placeholders for later features.

@@ -4,11 +4,11 @@ Last documentation update: 2026-08-30
 
 ## Current state
 
-- Overall status: F00 planned; implementation not started.
-- Last completed feature: None.
-- Current feature: F00 — Project foundation (Planned).
-- Next feature: F00 — Project foundation.
-- Next action: Implement `plans/F00_project_foundation.md`, verify the project import and main-scene smoke run, then record the manual launch result.
+- Overall status: F00 complete; F01 not started.
+- Last completed feature: F00 — Project foundation.
+- Current feature: None; ready to plan F01.
+- Next feature: F01 — Player and endless-looking arena.
+- Next action: Generate `plans/F01_player_endless_arena.md` from the feature plan template after inspecting the completed F00 foundation.
 - Known blockers: None.
 
 ## Roadmap status
@@ -17,7 +17,7 @@ Allowed statuses: `Not started`, `Planned`, `In progress`, `Blocked`, `Complete`
 
 | ID | Feature | Status | Plan | Implementation evidence | Verification evidence |
 | --- | --- | --- | --- | --- | --- |
-| F00 | Project foundation | Planned | `plans/F00_project_foundation.md` | — | — |
+| F00 | Project foundation | Complete | `plans/F00_project_foundation.md` | `project.godot`, `scenes/main.tscn`, `.gitignore`, and `tests/verify_f00.gd` with its Godot UID sidecar. | Godot 4.7.1 version, headless import, F00 verification script, and headless main-scene smoke run passed; rendered default and resized frames visually checked. |
 | F01 | Player and endless-looking arena | Not started | — | — | — |
 | F02 | Normal enemy and spawn system | Not started | — | — | — |
 | F03 | Auto-combat, damage, and defeat | Not started | — | — | — |
@@ -30,7 +30,7 @@ Allowed statuses: `Not started`, `Planned`, `In progress`, `Blocked`, `Complete`
 
 ## Verification baseline
 
-No Godot project exists yet, so no project import or runtime verification has been performed.
+F00 established a runnable Godot project and repeatable verification baseline.
 
 Local Godot environment verified on 2026-08-30:
 
@@ -39,11 +39,12 @@ Local Godot environment verified on 2026-08-30:
 - Version command: `& 'C:\MyFiles\Godot\Godot_v4.7.1-stable_win64_console.exe' --version`
 - Version result: `4.7.1.stable.official.a13da4feb`
 
-When F00 begins, record:
+Passing F00 commands on 2026-08-30:
 
-- Command used for a headless import/parser check.
-- Command used for a main-scene smoke run, if supported locally.
-- Any manual launch result.
+- Headless import/parser check: `& 'C:\MyFiles\Godot\Godot_v4.7.1-stable_win64_console.exe' --headless --editor --path . --quit`
+- Focused foundation check: `& 'C:\MyFiles\Godot\Godot_v4.7.1-stable_win64_console.exe' --headless --path . --script res://tests/verify_f00.gd`
+- Main-scene smoke run: `& 'C:\MyFiles\Godot\Godot_v4.7.1-stable_win64_console.exe' --headless --path . --quit-after 2`
+- Visual check: rendered and inspected the HUD at the default window and a requested 800×450 resized window; both passed after correcting the responsive stat layout.
 
 ## Active blockers and known issues
 
@@ -60,4 +61,4 @@ None.
 
 ## Latest handoff
 
-F00 is planned in `plans/F00_project_foundation.md`; implementation has not started and no game files exist yet. A fresh agent should read the sources of truth, mark F00 `In progress`, implement only that plan, and record the automated and manual verification evidence.
+F00 is complete and the project launches from `scenes/main.tscn`. The next session should inspect the foundation, create only `plans/F01_player_endless_arena.md`, and set F01 to `Planned`; do not implement F01 during a planning-only request.
