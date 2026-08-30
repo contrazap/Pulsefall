@@ -4,11 +4,11 @@ Last documentation update: 2026-08-30
 
 ## Current state
 
-- Overall status: F00 complete; F01 not started.
+- Overall status: F00 complete; F01 planned.
 - Last completed feature: F00 — Project foundation.
-- Current feature: None; ready to plan F01.
+- Current feature: F01 — Player and endless-looking arena (`Planned`).
 - Next feature: F01 — Player and endless-looking arena.
-- Next action: Generate `plans/F01_player_endless_arena.md` from the feature plan template after inspecting the completed F00 foundation.
+- Next action: Implement F01 according to `plans/F01_player_endless_arena.md`, then verify movement, camera following, repeating-floor coverage, bounded rendering, and F00 regression behavior.
 - Known blockers: None.
 
 ## Roadmap status
@@ -18,7 +18,7 @@ Allowed statuses: `Not started`, `Planned`, `In progress`, `Blocked`, `Complete`
 | ID | Feature | Status | Plan | Implementation evidence | Verification evidence |
 | --- | --- | --- | --- | --- | --- |
 | F00 | Project foundation | Complete | `plans/F00_project_foundation.md` | `project.godot`, `scenes/main.tscn`, `.gitignore`, and `tests/verify_f00.gd` with its Godot UID sidecar. | Godot 4.7.1 version, headless import, F00 verification script, and headless main-scene smoke run passed; rendered default and resized frames visually checked. |
-| F01 | Player and endless-looking arena | Not started | — | — | — |
+| F01 | Player and endless-looking arena | Planned | `plans/F01_player_endless_arena.md` | — | — |
 | F02 | Normal enemy and spawn system | Not started | — | — | — |
 | F03 | Auto-combat, damage, and defeat | Not started | — | — | — |
 | F04 | XP coins and five-level progression | Not started | — | — | — |
@@ -61,4 +61,4 @@ None.
 
 ## Latest handoff
 
-F00 is complete and the project launches from `scenes/main.tscn`. The next session should inspect the foundation, create only `plans/F01_player_endless_arena.md`, and set F01 to `Planned`; do not implement F01 during a planning-only request.
+F00 is complete and its import, focused verification, and main-scene smoke checks still pass. F01 is planned in `plans/F01_player_endless_arena.md`; the next session should mark it `In progress`, implement only that plan, run the listed automated checks, perform the focused manual movement/camera/floor checks when interactive Godot is available, and update the plan plus this ledger with actual evidence.
