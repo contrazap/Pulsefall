@@ -4,11 +4,11 @@ Last documentation update: 2026-08-30
 
 ## Current state
 
-- Overall status: Documentation scaffold created; implementation not started.
+- Overall status: F00 planned; implementation not started.
 - Last completed feature: None.
-- Current feature: None.
+- Current feature: F00 — Project foundation (Planned).
 - Next feature: F00 — Project foundation.
-- Next action: Generate `plans/F00_project_foundation.md` from the template, using the verified local Godot 4.7.1 executable and commands recorded below.
+- Next action: Implement `plans/F00_project_foundation.md`, verify the project import and main-scene smoke run, then record the manual launch result.
 - Known blockers: None.
 
 ## Roadmap status
@@ -17,7 +17,7 @@ Allowed statuses: `Not started`, `Planned`, `In progress`, `Blocked`, `Complete`
 
 | ID | Feature | Status | Plan | Implementation evidence | Verification evidence |
 | --- | --- | --- | --- | --- | --- |
-| F00 | Project foundation | Not started | — | — | — |
+| F00 | Project foundation | Planned | `plans/F00_project_foundation.md` | — | — |
 | F01 | Player and endless-looking arena | Not started | — | — | — |
 | F02 | Normal enemy and spawn system | Not started | — | — | — |
 | F03 | Auto-combat, damage, and defeat | Not started | — | — | — |
@@ -60,4 +60,4 @@ None.
 
 ## Latest handoff
 
-The documentation scaffold and local Godot environment record are ready. A fresh agent should read `AGENTS.md`, `GAME_PLAN.md`, and this ledger, then generate the F00 plan using the verified Godot 4.7.1 console executable above. No game files have been created yet.
+F00 is planned in `plans/F00_project_foundation.md`; implementation has not started and no game files exist yet. A fresh agent should read the sources of truth, mark F00 `In progress`, implement only that plan, and record the automated and manual verification evidence.
