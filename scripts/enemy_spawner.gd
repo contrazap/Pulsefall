@@ -43,12 +43,16 @@ func spawn_enemy() -> Node2D:
 		push_error("EnemySpawner's enemy_scene must instantiate a Node2D.")
 		return null
 
-	_enemy_container.add_child(enemy)
-	enemy.global_position = calculate_spawn_position(
+	var spawn_position := calculate_spawn_position(
 		_camera.get_screen_center_position(),
 		_camera.get_viewport_rect().size,
 		_camera.zoom
 	)
+	if _enemy_container is Node2D:
+		enemy.position = (_enemy_container as Node2D).to_local(spawn_position)
+	_enemy_container.add_child(enemy)
+	if not _enemy_container is Node2D:
+		enemy.global_position = spawn_position
 	if enemy.has_method("set_target"):
 		enemy.call("set_target", _target)
 	return enemy

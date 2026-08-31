@@ -1,9 +1,9 @@
 # F03 — Auto-combat, damage, and defeat
 
-- Status: Planned
+- Status: Complete
 - Roadmap dependency: F02
 - Created: 2026-08-31
-- Completed: —
+- Completed: 2026-09-01
 
 ## Objective
 
@@ -57,17 +57,17 @@ Complete the first combat loop: the player automatically fires bounded projectil
 
 ## Acceptance criteria
 
-- [ ] While valid enemies exist, the player automatically fires clearly visible projectiles at the nearest living normal enemy using a positive centralized fire interval; with no valid target, firing waits safely without errors or stray projectiles.
-- [ ] Projectiles travel frame-rate-independently in their initial aim direction, apply centralized damage once per eligible enemy hit, and are removed when their configured hit allowance or lifetime is exhausted so projectile count remains bounded during sustained play.
-- [ ] Normal enemies have centralized positive health and contact-damage values, accept damage through a reusable method, die exactly once at zero health, leave the enemy population/group cleanly, and do not drop XP yet.
-- [ ] Enemy contact reduces player health and updates the existing HUD immediately, while repeated contact during the configured invulnerability window causes no additional health loss; health never falls below zero.
-- [ ] Normal enemies still chase directly, but lightweight separation prevents exact enemy/enemy stacking and keeps them from resting directly on the player without pathfinding, hard body blocking, or trapping player movement.
-- [ ] At zero player health, active movement, spawning, enemy motion/contact, and firing stop or pause; a readable defeat overlay appears and its restart button remains usable.
-- [ ] Restart creates a clean run with full player health, the defeat overlay hidden, normal spawning/firing restored, and no retained enemies, projectiles, invulnerability, or defeat state from the prior run.
-- [ ] Combat health, damage, speed, interval, lifetime, hit allowance, invulnerability, and separation values are exported or otherwise centralized rather than scattered as unexplained literals.
-- [ ] F00–F02 movement, camera, endless-looking grid, off-screen spawning, population cap, and viewport-fixed HUD behavior remain functional.
-- [ ] The project imports/parses, F00–F02 regressions and focused F03 checks pass, and the configured main scene smoke-runs without parser, missing-resource, or runtime errors.
-- [ ] No XP/progression, upgrade, pickup, boss, victory, third-party dependency, pathfinding, or hard body-blocking behavior is introduced.
+- [x] While valid enemies exist, the player automatically fires clearly visible projectiles at the nearest living normal enemy using a positive centralized fire interval; with no valid target, firing waits safely without errors or stray projectiles.
+- [x] Projectiles travel frame-rate-independently in their initial aim direction, apply centralized damage once per eligible enemy hit, and are removed when their configured hit allowance or lifetime is exhausted so projectile count remains bounded during sustained play.
+- [x] Normal enemies have centralized positive health and contact-damage values, accept damage through a reusable method, die exactly once at zero health, leave the enemy population/group cleanly, and do not drop XP yet.
+- [x] Enemy contact reduces player health and updates the existing HUD immediately, while repeated contact during the configured invulnerability window causes no additional health loss; health never falls below zero.
+- [x] Normal enemies still chase directly, but lightweight separation prevents exact enemy/enemy stacking and keeps them from resting directly on the player without pathfinding, hard body blocking, or trapping player movement.
+- [x] At zero player health, active movement, spawning, enemy motion/contact, and firing stop or pause; a readable defeat overlay appears and its restart button remains usable.
+- [x] Restart creates a clean run with full player health, the defeat overlay hidden, normal spawning/firing restored, and no retained enemies, projectiles, invulnerability, or defeat state from the prior run.
+- [x] Combat health, damage, speed, interval, lifetime, hit allowance, invulnerability, and separation values are exported or otherwise centralized rather than scattered as unexplained literals.
+- [x] F00–F02 movement, camera, endless-looking grid, off-screen spawning, population cap, and viewport-fixed HUD behavior remain functional.
+- [x] The project imports/parses, F00–F02 regressions and focused F03 checks pass, and the configured main scene smoke-runs without parser, missing-resource, or runtime errors.
+- [x] No XP/progression, upgrade, pickup, boss, victory, third-party dependency, pathfinding, or hard body-blocking behavior is introduced.
 
 ## Verification plan
 
@@ -100,10 +100,12 @@ Complete the first combat loop: the player automatically fires bounded projectil
 
 ## Completion notes
 
-Fill this in during implementation:
-
-- Actual files changed:
+- Actual files changed: updated `scenes/main.tscn`, `scenes/player.tscn`, `scenes/enemy.tscn`, `scripts/player.gd`, `scripts/enemy.gd`, and `scripts/enemy_spawner.gd`; added `scenes/projectile.tscn`, `scripts/auto_weapon.gd`, `scripts/projectile.gd`, `scripts/game_controller.gd`, `tests/verify_f03.gd`, and the four Godot-generated script UID sidecars; updated this plan and `PROGRESS.md`.
 - Commands/tests and results:
-- Manual checks performed:
-- Deviations from plan:
-- Remaining risks or follow-up:
+  - `& 'C:\MyFiles\Godot\Godot_v4.7.1-stable_win64_console.exe' --headless --editor --path . --quit` — exit 0; import and script scan completed without parser or resource errors.
+  - F00, F01, F02, and F03 verification scripts — all exited 0. F03 exercised nearest-target/no-target behavior, projectile travel/hit/lifetime cleanup and real physics collision, enemy death/group cleanup, contact damage and invulnerability, opposing exact-overlap separation, immediate health HUD updates, full gameplay pause, operable defeat controls, and a fresh scene reload with clean run state.
+  - `& 'C:\MyFiles\Godot\Godot_v4.7.1-stable_win64_console.exe' --headless --path . --fixed-fps 60 --quit-after 600` — exit 0 with no script/runtime errors or orphan-node warnings during sustained spawning and combat.
+  - `git diff --check` — exit 0.
+- Manual checks performed: ran a temporary capture harness with the normal OpenGL renderer and visually inspected 1152×648 combat and defeat frames. The cyan projectile, cyan player, magenta enemies, fixed HUD, dimmed paused world, centered `PULSE LOST` panel, and restart button were distinct and readable. The harness was removed after capture. Physical keyboard/mouse play was not performed; movement, contact, pause, button process mode, and scene reload behavior were exercised by the automated verification.
+- Deviations from plan: enemy spawning now assigns the off-screen transform before adding the enemy to the scene tree. Render verification exposed that same-frame spawn-and-fire could otherwise report stale origin overlaps; F02/F03 checks cover the corrected behavior. No scope expansion was introduced.
+- Remaining risks or follow-up: combat values are initial prototype tuning and remain intentionally available for F09 balance work. No F03 blocker remains.

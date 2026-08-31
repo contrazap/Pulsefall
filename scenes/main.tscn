@@ -1,9 +1,10 @@
-[gd_scene load_steps=8 format=3]
+[gd_scene load_steps=9 format=3]
 
 [ext_resource type="Script" path="res://scripts/arena_grid.gd" id="1_grid"]
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="2_player"]
 [ext_resource type="PackedScene" path="res://scenes/enemy.tscn" id="3_enemy"]
 [ext_resource type="Script" path="res://scripts/enemy_spawner.gd" id="4_spawner"]
+[ext_resource type="Script" path="res://scripts/game_controller.gd" id="5_controller"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_top_bar"]
 bg_color = Color(0.027, 0.047, 0.09, 0.92)
@@ -39,6 +40,7 @@ corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
 [node name="Main" type="Node2D"]
+script = ExtResource("5_controller")
 
 [node name="ArenaBackground" type="ColorRect" parent="."]
 z_index = -100
@@ -78,6 +80,8 @@ target_path = NodePath("../Player")
 [node name="Player" parent="World" instance=ExtResource("2_player")]
 
 [node name="Enemies" type="Node2D" parent="World"]
+
+[node name="Projectiles" type="Node2D" parent="World"]
 
 [node name="EnemySpawner" type="Node" parent="World"]
 script = ExtResource("4_spawner")
@@ -203,6 +207,74 @@ theme_override_styles/background = SubResource("StyleBox_xp_background")
 theme_override_styles/fill = SubResource("StyleBox_xp_fill")
 show_percentage = false
 value = 20.0
+
+[node name="DefeatOverlay" type="Control" parent="HUD"]
+process_mode = 3
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+
+[node name="Dim" type="ColorRect" parent="HUD/DefeatOverlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.008, 0.01, 0.025, 0.82)
+
+[node name="Center" type="CenterContainer" parent="HUD/DefeatOverlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="HUD/DefeatOverlay/Center"]
+custom_minimum_size = Vector2(420, 250)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBox_top_bar")
+
+[node name="Margin" type="MarginContainer" parent="HUD/DefeatOverlay/Center/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 42
+theme_override_constants/margin_top = 34
+theme_override_constants/margin_right = 42
+theme_override_constants/margin_bottom = 34
+
+[node name="Content" type="VBoxContainer" parent="HUD/DefeatOverlay/Center/Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="Title" type="Label" parent="HUD/DefeatOverlay/Center/Panel/Margin/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.25, 0.55, 1)
+theme_override_font_sizes/font_size = 38
+text = "PULSE LOST"
+horizontal_alignment = 1
+
+[node name="Message" type="Label" parent="HUD/DefeatOverlay/Center/Panel/Margin/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.78, 0.88, 1, 1)
+theme_override_font_sizes/font_size = 17
+text = "The swarm overwhelmed you."
+horizontal_alignment = 1
+
+[node name="RestartButton" type="Button" parent="HUD/DefeatOverlay/Center/Panel/Margin/Content"]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+process_mode = 3
+theme_override_colors/font_color = Color(0.9, 0.99, 1, 1)
+theme_override_font_sizes/font_size = 19
+text = "RESTART RUN"
 
 [node name="FoundationNote" type="Label" parent="HUD/Layout"]
 layout_mode = 1
