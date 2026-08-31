@@ -4,11 +4,11 @@ Last documentation update: 2026-08-31
 
 ## Current state
 
-- Overall status: F00–F01 complete; F02 not started.
+- Overall status: F00–F01 complete; F02 planned.
 - Last completed feature: F01 — Player and endless-looking arena.
-- Current feature: F02 — Normal enemy and spawn system (`Not started`).
+- Current feature: F02 — Normal enemy and spawn system (`Planned`).
 - Next feature: F02 — Normal enemy and spawn system.
-- Next action: Generate `plans/F02_normal_enemy_spawn_system.md` from the feature-plan template after inspecting the completed F01 implementation and rerunning its checks.
+- Next action: Implement `plans/F02_normal_enemy_spawn_system.md`, beginning with the passing F00/F01 baseline and marking F02 `In progress` before runtime edits.
 - Known blockers: None.
 
 ## Roadmap status
@@ -19,7 +19,7 @@ Allowed statuses: `Not started`, `Planned`, `In progress`, `Blocked`, `Complete`
 | --- | --- | --- | --- | --- | --- |
 | F00 | Project foundation | Complete | `plans/F00_project_foundation.md` | `project.godot`, `scenes/main.tscn`, `.gitignore`, and `tests/verify_f00.gd` with its Godot UID sidecar. | Godot 4.7.1 version, headless import, F00 verification script, and headless main-scene smoke run passed; rendered default and resized frames visually checked. |
 | F01 | Player and endless-looking arena | Complete | `plans/F01_player_endless_arena.md` | `scenes/player.tscn`, `scripts/player.gd`, `scripts/arena_grid.gd`, and integration in `scenes/main.tscn`. | Import/parser, F00 regression, focused F01 verification, headless smoke run, and rendered default/traveled/resized frame inspection passed. |
-| F02 | Normal enemy and spawn system | Not started | — | — | — |
+| F02 | Normal enemy and spawn system | Planned | `plans/F02_normal_enemy_spawn_system.md` | — | Preflight import/parser, F00 regression, F01 focused verification, and main-scene smoke run passed on 2026-08-31. |
 | F03 | Auto-combat, damage, and defeat | Not started | — | — | — |
 | F04 | XP coins and five-level progression | Not started | — | — | — |
 | F05 | Upgrade choice UI and stat upgrades | Not started | — | — | — |
@@ -63,4 +63,4 @@ None.
 
 ## Latest handoff
 
-F01 is complete. The project now launches with a responsive geometric player, enabled following camera, viewport-fixed F00 HUD, and a repeating grid whose draw work is bounded by viewport size rather than world travel. The import/parser, F00 regression, F01 focused verification, main-scene smoke run, and rendered default/traveled/resized checks pass. F02 is the earliest dependency-satisfied incomplete feature and has no plan yet; the next session should inspect the current scenes/scripts and generate `plans/F02_normal_enemy_spawn_system.md` without implementing it.
+F01 is complete and its import/parser, F00 regression, F01 focused verification, and main-scene smoke baseline passed again on 2026-08-31. F02 is now planned in `plans/F02_normal_enemy_spawn_system.md`: one reusable direct-chasing enemy plus a camera-aware off-screen spawner with centralized tuning and a hard active-enemy cap. The next session should mark F02 `In progress`, implement only that plan, verify it, and record the results.
