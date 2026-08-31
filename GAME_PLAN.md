@@ -54,6 +54,7 @@ Visual direction: dark background, bright geometric characters/projectiles, read
 
 - Spawns outside the visible viewport, not directly on the player.
 - Moves directly toward the player; the empty arena makes pathfinding unnecessary.
+- Uses lightweight local separation so enemies can bunch and partially overlap without fully stacking on one another or sitting directly on top of the player. This must not introduce pathfinding or hard body blocking that traps the player.
 - Deals contact damage subject to the player’s invulnerability window.
 - Drops one XP coin on death.
 - Spawn pressure may increase by player level, but this must remain a small configuration change rather than a separate difficulty system.
@@ -121,7 +122,7 @@ Each feature gets one concise file under `plans/` when it becomes the next task.
 | F00 | Project foundation | — | Godot project, main scene, input actions, documented run/import verification, and minimal HUD shell |
 | F01 | Player and endless-looking arena | F00 | Responsive movement, following camera, repeating floor, and no visible arena edge |
 | F02 | Normal enemy and spawn system | F01 | Reusable chasing enemy and capped off-screen spawning |
-| F03 | Auto-combat, damage, and defeat | F02 | Nearest-target shooting, projectiles, enemy death, player damage/invulnerability, defeat and restart |
+| F03 | Auto-combat, damage, and defeat | F02 | Nearest-target shooting, projectiles, enemy death, lightweight enemy/player separation, player damage/invulnerability, defeat and restart |
 | F04 | XP coins and five-level progression | F03 | Enemy drops, collection, thresholds, carry-over XP, HUD level/XP display, and level-up event |
 | F05 | Upgrade choice UI and stat upgrades | F04 | Paused three-choice screen with working Vitality and Haste plus a combat-choice slot |
 | F06 | Combat ability upgrades | F05 | Two-rank Multishot, Piercing, and Nova integrated into the random combat choice |
@@ -137,6 +138,7 @@ These are checked again during F09:
 - The player can reach five upgrade selections through normal play.
 - Every upgrade has a visible gameplay effect and respects its defined rank behavior.
 - Normal enemy, projectile, coin, decoration, and pickup counts remain bounded during a run.
+- Normal enemies may bunch together but remain individually readable rather than fully stacking on one another or directly on the player.
 - The boss appears only after the fifth upgrade is chosen.
 - Player death produces defeat; boss death produces victory.
 - Restart restores clean initial state without retaining upgrades, entities, or progression.

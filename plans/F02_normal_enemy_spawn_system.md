@@ -1,9 +1,9 @@
 # F02 — Normal enemy and spawn system
 
-- Status: Planned
+- Status: Complete
 - Roadmap dependency: F01
 - Created: 2026-08-31
-- Completed: —
+- Completed: 2026-08-31
 
 ## Objective
 
@@ -54,14 +54,14 @@ Add a reusable geometric normal enemy that moves directly toward the player, plu
 
 ## Acceptance criteria
 
-- [ ] Running the main scene produces clearly distinguishable normal enemies that enter from beyond the current visible play area and move directly toward the moving player.
-- [ ] The reusable enemy accepts a player target, uses a positive centralized movement speed, moves frame-rate-independently, and remains safe when its target is absent or freed.
-- [ ] Every generated spawn position is outside the camera-visible world rectangle by a configured positive margin and is not directly on the player, including after the player travels away from the origin.
-- [ ] Spawn interval, off-screen margin, and maximum active-enemy count are exported or otherwise centralized rather than scattered as unexplained literals.
-- [ ] The active normal-enemy population never exceeds the configured cap, and continued runtime at the cap does not accumulate extra enemy nodes.
-- [ ] The player movement, following camera, repeating floor, and viewport-fixed HUD from F00/F01 remain functional while enemies spawn and chase.
-- [ ] The project imports/parses, the F00 and F01 regression checks pass, the focused F02 check passes, and the configured main scene smoke-runs without parser, missing-resource, or runtime errors.
-- [ ] No combat, damage, death, XP, upgrade, pickup, boss, or third-party dependency behavior is introduced.
+- [x] Running the main scene produces clearly distinguishable normal enemies that enter from beyond the current visible play area and move directly toward the moving player.
+- [x] The reusable enemy accepts a player target, uses a positive centralized movement speed, moves frame-rate-independently, and remains safe when its target is absent or freed.
+- [x] Every generated spawn position is outside the camera-visible world rectangle by a configured positive margin and is not directly on the player, including after the player travels away from the origin.
+- [x] Spawn interval, off-screen margin, and maximum active-enemy count are exported or otherwise centralized rather than scattered as unexplained literals.
+- [x] The active normal-enemy population never exceeds the configured cap, and continued runtime at the cap does not accumulate extra enemy nodes.
+- [x] The player movement, following camera, repeating floor, and viewport-fixed HUD from F00/F01 remain functional while enemies spawn and chase.
+- [x] The project imports/parses, the F00 and F01 regression checks pass, the focused F02 check passes, and the configured main scene smoke-runs without parser, missing-resource, or runtime errors.
+- [x] No combat, damage, death, XP, upgrade, pickup, boss, or third-party dependency behavior is introduced.
 
 ## Verification plan
 
@@ -89,10 +89,14 @@ Add a reusable geometric normal enemy that moves directly toward the player, plu
 
 ## Completion notes
 
-Fill this in during implementation:
-
-- Actual files changed:
+- Actual files changed: updated `scenes/main.tscn`; added `scenes/enemy.tscn`, `scripts/enemy.gd`, `scripts/enemy_spawner.gd`, `tests/verify_f02.gd`, and the three Godot-generated script UID sidecars; updated this plan and `PROGRESS.md`.
 - Commands/tests and results:
-- Manual checks performed:
-- Deviations from plan:
-- Remaining risks or follow-up:
+  - `& 'C:\MyFiles\Godot\Godot_v4.7.1-stable_win64_console.exe' --headless --editor --path . --quit` — exit 0; import and script scan completed without parser or resource errors.
+  - `& 'C:\MyFiles\Godot\Godot_v4.7.1-stable_win64_console.exe' --headless --path . --script res://tests/verify_f00.gd` — exit 0; F00 regression passed.
+  - `& 'C:\MyFiles\Godot\Godot_v4.7.1-stable_win64_console.exe' --headless --path . --script res://tests/verify_f01.gd` — exit 0; F01 regression passed.
+  - `& 'C:\MyFiles\Godot\Godot_v4.7.1-stable_win64_console.exe' --headless --path . --script res://tests/verify_f02.gd` — exit 0; verified reusable structure, direct chase calculations, missing-target safety, centralized spawn tuning, four-side off-screen positions at origin and a distant camera location, runtime target assignment, and the hard population cap without extra nodes.
+  - `& 'C:\MyFiles\Godot\Godot_v4.7.1-stable_win64_console.exe' --headless --path . --fixed-fps 60 --quit-after 600` — exit 0; repeated-spawn main-scene smoke run completed without runtime errors.
+  - `git diff --check` — exit 0.
+- Manual checks performed: ran a temporary rendered capture harness with the normal graphics renderer and visually inspected a populated starting frame plus a frame after 360 simulated right-movement physics frames. Magenta enemies were clearly distinct from the cyan player, entered from multiple edges, and converged toward the player. After the player traveled to world X about 1915, enemies remained camera-relative, the repeating grid covered the viewport, and the HUD remained fixed. The capture ended with 12 active enemies. Physical keyboard interaction and remote-tree inspection at the cap were not performed; movement behavior and the exact cap/no-extra-node behavior were exercised by the automated checks.
+- Deviations from plan: none. The spawner uses a configured `Timer` child and deterministic geometry helpers for verification.
+- Remaining risks or follow-up: collision-driven contact behavior is intentionally inactive until F03. A post-completion manual play check confirmed that enemies can overlap exactly while chasing; the roadmap now explicitly assigns lightweight enemy/enemy and enemy/player separation to F03. No F02 blocker remains.

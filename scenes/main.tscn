@@ -1,7 +1,9 @@
-[gd_scene load_steps=6 format=3]
+[gd_scene load_steps=8 format=3]
 
 [ext_resource type="Script" path="res://scripts/arena_grid.gd" id="1_grid"]
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="2_player"]
+[ext_resource type="PackedScene" path="res://scenes/enemy.tscn" id="3_enemy"]
+[ext_resource type="Script" path="res://scripts/enemy_spawner.gd" id="4_spawner"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_top_bar"]
 bg_color = Color(0.027, 0.047, 0.09, 0.92)
@@ -74,6 +76,17 @@ script = ExtResource("1_grid")
 target_path = NodePath("../Player")
 
 [node name="Player" parent="World" instance=ExtResource("2_player")]
+
+[node name="Enemies" type="Node2D" parent="World"]
+
+[node name="EnemySpawner" type="Node" parent="World"]
+script = ExtResource("4_spawner")
+enemy_scene = ExtResource("3_enemy")
+target_path = NodePath("../Player")
+camera_path = NodePath("../Player/Camera2D")
+enemy_container_path = NodePath("../Enemies")
+
+[node name="SpawnTimer" type="Timer" parent="World/EnemySpawner"]
 
 [node name="HUD" type="CanvasLayer" parent="."]
 
