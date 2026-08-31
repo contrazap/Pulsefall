@@ -1,9 +1,9 @@
 # F01 — Player and endless-looking arena
 
-- Status: Planned
+- Status: Complete
 - Roadmap dependency: F00
 - Created: 2026-08-30
-- Completed: —
+- Completed: 2026-08-31
 
 ## Objective
 
@@ -54,14 +54,14 @@ Add a responsive geometric player that moves with the existing keyboard actions 
 
 ## Acceptance criteria
 
-- [ ] Running the main scene shows a clearly distinguishable geometric player over a repeating neon floor while retaining the readable F00 HUD.
-- [ ] WASD and arrow keys move the player responsively in all four directions; releasing input stops movement, opposite inputs cancel, and diagonal movement does not exceed the configured axial speed.
-- [ ] Player movement speed is exported or otherwise centralized for later Haste integration rather than duplicated as unexplained literals.
-- [ ] The enabled camera follows the player and keeps it centered during extended travel in every direction, while the HUD remains fixed to the viewport.
-- [ ] The repeating floor continuously covers the visible play area at the default window size and at 800×450, with no reachable edge or exposed clear region during extended movement.
-- [ ] Arena rendering uses a fixed amount of scene content or bounded draw work; travel does not accumulate floor tiles or other nodes.
-- [ ] The project imports/parses, the F00 regression check passes, the focused F01 check passes, and the configured main scene smoke-runs without parser, missing-resource, or runtime errors.
-- [ ] No F02-or-later gameplay behavior or third-party dependency is introduced.
+- [x] Running the main scene shows a clearly distinguishable geometric player over a repeating neon floor while retaining the readable F00 HUD.
+- [x] WASD and arrow keys move the player responsively in all four directions; releasing input stops movement, opposite inputs cancel, and diagonal movement does not exceed the configured axial speed.
+- [x] Player movement speed is exported or otherwise centralized for later Haste integration rather than duplicated as unexplained literals.
+- [x] The enabled camera follows the player and keeps it centered during extended travel in every direction, while the HUD remains fixed to the viewport.
+- [x] The repeating floor continuously covers the visible play area at the default window size and at 800×450, with no reachable edge or exposed clear region during extended movement.
+- [x] Arena rendering uses a fixed amount of scene content or bounded draw work; travel does not accumulate floor tiles or other nodes.
+- [x] The project imports/parses, the F00 regression check passes, the focused F01 check passes, and the configured main scene smoke-runs without parser, missing-resource, or runtime errors.
+- [x] No F02-or-later gameplay behavior or third-party dependency is introduced.
 
 ## Verification plan
 
@@ -88,10 +88,12 @@ Add a responsive geometric player that moves with the existing keyboard actions 
 
 ## Completion notes
 
-Fill this in during implementation:
-
-- Actual files changed:
+- Actual files changed: updated `scenes/main.tscn`; added `scenes/player.tscn`, `scripts/player.gd`, `scripts/arena_grid.gd`, `tests/verify_f01.gd`, and the three Godot-generated script UID sidecars; updated this plan and `PROGRESS.md`.
 - Commands/tests and results:
-- Manual checks performed:
-- Deviations from plan:
-- Remaining risks or follow-up:
+  - `& 'C:\MyFiles\Godot\Godot_v4.7.1-stable_win64_console.exe' --headless --editor --path . --quit` — exit 0; import and script scan completed without parser or resource errors.
+  - `& 'C:\MyFiles\Godot\Godot_v4.7.1-stable_win64_console.exe' --headless --path . --script res://tests/verify_f00.gd` — exit 0; F00 regression passed.
+  - `& 'C:\MyFiles\Godot\Godot_v4.7.1-stable_win64_console.exe' --headless --path . --script res://tests/verify_f01.gd` — exit 0; verified movement input directions, release/opposition behavior, diagonal normalization, exported speed, player/camera structure, viewport-fixed HUD, grid alignment, and bounded draw work.
+  - `& 'C:\MyFiles\Godot\Godot_v4.7.1-stable_win64_console.exe' --headless --path . --quit-after 2` — exit 0; configured main scene smoke-ran without runtime errors.
+- Manual checks performed: launched a temporary rendered capture harness with the normal graphics renderer and visually inspected the initial 1152×648 frame, a stable frame after 300 simulated right-movement physics frames (player world X about 1595), and an 800×450 resized frame. The geometric player stayed centered, the HUD stayed fixed and readable, and the repeating grid covered every frame without a visible edge or seam. Physical keyboard interaction was not performed; all four action directions, release, opposing inputs, and diagonal normalization were exercised by `verify_f01.gd`.
+- Deviations from plan: retained the F00 background controls behind the new bounded grid so the existing regression check remains valid; the active arena itself is rendered by one camera-relative `Node2D` rather than accumulated tile nodes.
+- Remaining risks or follow-up: player collision geometry is intentionally deferred until F02/F03 establishes enemy and contact requirements. No F01 blocker remains.

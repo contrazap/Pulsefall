@@ -1,14 +1,14 @@
 # Pulsefall — Progress Ledger
 
-Last documentation update: 2026-08-30
+Last documentation update: 2026-08-31
 
 ## Current state
 
-- Overall status: F00 complete; F01 planned.
-- Last completed feature: F00 — Project foundation.
-- Current feature: F01 — Player and endless-looking arena (`Planned`).
-- Next feature: F01 — Player and endless-looking arena.
-- Next action: Implement F01 according to `plans/F01_player_endless_arena.md`, then verify movement, camera following, repeating-floor coverage, bounded rendering, and F00 regression behavior.
+- Overall status: F00–F01 complete; F02 not started.
+- Last completed feature: F01 — Player and endless-looking arena.
+- Current feature: F02 — Normal enemy and spawn system (`Not started`).
+- Next feature: F02 — Normal enemy and spawn system.
+- Next action: Generate `plans/F02_normal_enemy_spawn_system.md` from the feature-plan template after inspecting the completed F01 implementation and rerunning its checks.
 - Known blockers: None.
 
 ## Roadmap status
@@ -18,7 +18,7 @@ Allowed statuses: `Not started`, `Planned`, `In progress`, `Blocked`, `Complete`
 | ID | Feature | Status | Plan | Implementation evidence | Verification evidence |
 | --- | --- | --- | --- | --- | --- |
 | F00 | Project foundation | Complete | `plans/F00_project_foundation.md` | `project.godot`, `scenes/main.tscn`, `.gitignore`, and `tests/verify_f00.gd` with its Godot UID sidecar. | Godot 4.7.1 version, headless import, F00 verification script, and headless main-scene smoke run passed; rendered default and resized frames visually checked. |
-| F01 | Player and endless-looking arena | Planned | `plans/F01_player_endless_arena.md` | — | — |
+| F01 | Player and endless-looking arena | Complete | `plans/F01_player_endless_arena.md` | `scenes/player.tscn`, `scripts/player.gd`, `scripts/arena_grid.gd`, and integration in `scenes/main.tscn`. | Import/parser, F00 regression, focused F01 verification, headless smoke run, and rendered default/traveled/resized frame inspection passed. |
 | F02 | Normal enemy and spawn system | Not started | — | — | — |
 | F03 | Auto-combat, damage, and defeat | Not started | — | — | — |
 | F04 | XP coins and five-level progression | Not started | — | — | — |
@@ -31,6 +31,8 @@ Allowed statuses: `Not started`, `Planned`, `In progress`, `Blocked`, `Complete`
 ## Verification baseline
 
 F00 established a runnable Godot project and repeatable verification baseline.
+
+F01 added a moving player, following camera, and bounded camera-relative repeating grid. On 2026-08-31, the headless import, F00 regression, focused F01 verification, and main-scene smoke commands passed. Rendered 1152×648 initial/traveled frames and an 800×450 resized frame were visually inspected successfully; the travel capture reached player world X about 1595 while remaining centered.
 
 Local Godot environment verified on 2026-08-30:
 
@@ -61,4 +63,4 @@ None.
 
 ## Latest handoff
 
-F00 is complete and its import, focused verification, and main-scene smoke checks still pass. F01 is planned in `plans/F01_player_endless_arena.md`; the next session should mark it `In progress`, implement only that plan, run the listed automated checks, perform the focused manual movement/camera/floor checks when interactive Godot is available, and update the plan plus this ledger with actual evidence.
+F01 is complete. The project now launches with a responsive geometric player, enabled following camera, viewport-fixed F00 HUD, and a repeating grid whose draw work is bounded by viewport size rather than world travel. The import/parser, F00 regression, F01 focused verification, main-scene smoke run, and rendered default/traveled/resized checks pass. F02 is the earliest dependency-satisfied incomplete feature and has no plan yet; the next session should inspect the current scenes/scripts and generate `plans/F02_normal_enemy_spawn_system.md` without implementing it.

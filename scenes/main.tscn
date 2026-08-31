@@ -1,4 +1,7 @@
-[gd_scene load_steps=4 format=3]
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://scripts/arena_grid.gd" id="1_grid"]
+[ext_resource type="PackedScene" path="res://scenes/player.tscn" id="2_player"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_top_bar"]
 bg_color = Color(0.027, 0.047, 0.09, 0.92)
@@ -33,9 +36,10 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
-[node name="Main" type="Node"]
+[node name="Main" type="Node2D"]
 
 [node name="ArenaBackground" type="ColorRect" parent="."]
+z_index = -100
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -46,6 +50,7 @@ mouse_filter = 2
 color = Color(0.0118, 0.0157, 0.0353, 1)
 
 [node name="AmbientGlow" type="ColorRect" parent="."]
+z_index = -90
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -60,6 +65,15 @@ grow_horizontal = 2
 grow_vertical = 2
 mouse_filter = 2
 color = Color(0.035, 0.12, 0.2, 0.22)
+
+[node name="World" type="Node2D" parent="."]
+
+[node name="ArenaGrid" type="Node2D" parent="World"]
+z_index = -10
+script = ExtResource("1_grid")
+target_path = NodePath("../Player")
+
+[node name="Player" parent="World" instance=ExtResource("2_player")]
 
 [node name="HUD" type="CanvasLayer" parent="."]
 
