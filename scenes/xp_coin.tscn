@@ -1,0 +1,19 @@
+[gd_scene load_steps=2 format=3]
+
+[ext_resource type="Script" path="res://scripts/xp_coin.gd" id="1_coin"]
+
+[node name="XPCoin" type="Node2D"]
+z_index = 2
+script = ExtResource("1_coin")
+
+[node name="OuterGlow" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(0, -14, 10, -10, 14, 0, 10, 10, 0, 14, -10, 10, -14, 0, -10, -10)
+color = Color(0.15, 0.95, 1, 0.24)
+
+[node name="Body" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(0, -9, 7, -7, 9, 0, 7, 7, 0, 9, -7, 7, -9, 0, -7, -7)
+color = Color(0.16, 0.9, 1, 1)
+
+[node name="Core" type="Polygon2D" parent="."]
+polygon = PackedVector2Array(0, -4, 4, 0, 0, 4, -4, 0)
+color = Color(0.9, 1, 1, 1)

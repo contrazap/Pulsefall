@@ -1,5 +1,7 @@
 extends Node
 
+signal enemy_spawned(enemy: Node2D)
+
 const NORMAL_ENEMY_GROUP: StringName = &"normal_enemies"
 
 enum SpawnSide {
@@ -55,6 +57,7 @@ func spawn_enemy() -> Node2D:
 		enemy.global_position = spawn_position
 	if enemy.has_method("set_target"):
 		enemy.call("set_target", _target)
+	enemy_spawned.emit(enemy)
 	return enemy
 
 

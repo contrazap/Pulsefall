@@ -4,11 +4,11 @@ Last documentation update: 2026-09-01
 
 ## Current state
 
-- Overall status: F00–F03 complete; F04 not started.
-- Last completed feature: F03 — Auto-combat, damage, and defeat.
-- Current feature: None; F04 — XP coins and five-level progression is not started.
-- Next feature: F04 — XP coins and five-level progression.
-- Next action: Generate `plans/F04_xp_coins_five_level_progression.md` from the feature template after inspecting the completed F03 baseline; do not implement F04 during planning.
+- Overall status: F00–F04 complete; F05 planned.
+- Last completed feature: F04 — XP coins and five-level progression.
+- Current feature: F05 — Upgrade choice UI and stat upgrades is planned.
+- Next feature: F05 — Upgrade choice UI and stat upgrades.
+- Next action: Implement F05 from `plans/F05_upgrade_choice_ui_stat_upgrades.md`, beginning with the documented baseline checks and `In progress` ledger update.
 - Known blockers: None.
 
 ## Roadmap status
@@ -21,8 +21,8 @@ Allowed statuses: `Not started`, `Planned`, `In progress`, `Blocked`, `Complete`
 | F01 | Player and endless-looking arena | Complete | `plans/F01_player_endless_arena.md` | `scenes/player.tscn`, `scripts/player.gd`, `scripts/arena_grid.gd`, and integration in `scenes/main.tscn`. | Import/parser, F00 regression, focused F01 verification, headless smoke run, and rendered default/traveled/resized frame inspection passed. |
 | F02 | Normal enemy and spawn system | Complete | `plans/F02_normal_enemy_spawn_system.md` | `scenes/enemy.tscn`, `scripts/enemy.gd`, `scripts/enemy_spawner.gd`, `scenes/main.tscn`, and `tests/verify_f02.gd` with Godot UID sidecars. | Import/parser, F00/F01 regressions, focused F02 verification, 600-iteration smoke run, diff check, and rendered origin/traveled frame inspection passed on 2026-08-31. |
 | F03 | Auto-combat, damage, and defeat | Complete | `plans/F03_auto_combat_damage_defeat.md` | Player/enemy health and damage, nearest-target auto-weapon, bounded projectile, soft separation, live health HUD, paused defeat overlay, and clean restart in the F03 runtime files. | Godot 4.7.1 import/parser, F00–F03 checks, 600-iteration combat smoke run, `git diff --check`, and rendered combat/defeat frame inspection passed on 2026-09-01. |
-| F04 | XP coins and five-level progression | Not started | — | — | — |
-| F05 | Upgrade choice UI and stat upgrades | Not started | — | — | — |
+| F04 | XP coins and five-level progression | Complete | `plans/F04_xp_coins_five_level_progression.md` | Bounded geometric XP drops, attraction/collection, cap merging, five-threshold carry-over progression, reusable level-up events, live HUD, pause, and clean restart integration. | Godot 4.7.1 import/parser, F00–F04 checks, 600-iteration smoke run, `git diff --check`, and rendered progression/completion inspection passed on 2026-09-01. |
+| F05 | Upgrade choice UI and stat upgrades | Planned | `plans/F05_upgrade_choice_ui_stat_upgrades.md` | — | Planning baseline passed Godot 4.7.1 import/parser, F00–F04 checks, and `git diff --check` on 2026-09-01. |
 | F06 | Combat ability upgrades | Not started | — | — | — |
 | F07 | Procedural decorations and world pickups | Not started | — | — | — |
 | F08 | Boss phase and victory | Not started | — | — | — |
@@ -37,6 +37,8 @@ F01 added a moving player, following camera, and bounded camera-relative repeati
 F02 added a reusable direct-chasing normal enemy and a timer-driven, camera-aware spawner with centralized interval, margin, and hard population cap. On 2026-08-31, import/parser, F00/F01 regressions, focused F02 verification, a 600-iteration smoke run, and `git diff --check` passed. Rendered populated origin and traveled frames were inspected; after player world X reached about 1915, enemy presentation and camera-relative behavior, floor coverage, and fixed HUD remained correct.
 
 F03 added nearest-target automatic fire, visible bounded projectiles, reusable enemy/player health and damage, contact invulnerability, soft enemy/enemy and enemy/player separation, a live health HUD, and a paused defeat screen with clean restart. On 2026-09-01, import/parser, F00–F03 verification, a 600-iteration combat smoke run, and `git diff --check` passed. Rendered combat and defeat frames were inspected successfully. F03 verification also reloads the current scene and proves full health, cleared invulnerability, empty entity containers, hidden defeat UI, and restored spawn/fire timers.
+
+F04 added one-shot geometric XP drops for normal-enemy combat deaths, player attraction and collection, a centralized 40-coin cap that preserves excess drop value by merging, five finite XP thresholds with carry-over and ordered level-up events, and live level/XP HUD states through level-6 completion. On 2026-09-01, import/parser, F00–F04 verification, a 600-iteration gameplay smoke run, and `git diff --check` passed. Rendered level-2 carry-over and level-6 completion frames were inspected successfully; focused verification also proved paused coins and a clean level-1 restart with empty entity containers.
 
 Local Godot environment verified on 2026-08-30:
 
@@ -55,7 +57,7 @@ Passing F00 commands on 2026-08-30:
 ## Active blockers and known issues
 
 - No blockers.
-- No known F03 runtime issue is blocking F04 planning. Initial combat values remain subject to F09 tuning.
+- No known F04 runtime issue is blocking F05 planning. Initial combat and XP values remain subject to F09 tuning.
 
 ## Decision log
 
@@ -69,4 +71,4 @@ Passing F00 commands on 2026-08-30:
 
 ## Latest handoff
 
-F03 is complete. The project now supports nearest-target auto-fire, bounded projectile damage, enemy death, player contact damage with invulnerability, soft crowd separation, live health display, paused defeat, and clean restart without introducing XP or later roadmap systems. The completed baseline passed import/parser, F00–F03 checks, a 600-iteration combat smoke run, `git diff --check`, and rendered combat/defeat inspection on 2026-09-01. The next session should inspect this baseline and generate only the F04 plan for XP coins and five-level progression.
+F04 is complete and F05 is planned in `plans/F05_upgrade_choice_ui_stat_upgrades.md`. The planning baseline passed import/parser, F00–F04 checks, and `git diff --check` on 2026-09-01. The next session should implement only F05: queued paused three-choice screens, repeatable Vitality/Haste, a one-shot combat-choice seam, applied-selection tracking, and clean restart, while leaving combat ability effects and later systems out of scope.
