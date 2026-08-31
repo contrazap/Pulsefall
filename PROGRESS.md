@@ -4,11 +4,11 @@ Last documentation update: 2026-08-31
 
 ## Current state
 
-- Overall status: F00–F02 complete; F03 not started.
+- Overall status: F00–F02 complete; F03 planned.
 - Last completed feature: F02 — Normal enemy and spawn system.
-- Current feature: None.
+- Current feature: F03 — Auto-combat, damage, and defeat (`Planned`).
 - Next feature: F03 — Auto-combat, damage, and defeat.
-- Next action: Generate `plans/F03_auto_combat_damage_defeat.md` from the feature plan template after inspecting the completed F02 baseline; include lightweight enemy/enemy and enemy/player separation without pathfinding or hard body blocking.
+- Next action: Implement F03 from `plans/F03_auto_combat_damage_defeat.md`, beginning with the documented baseline checks and marking it `In progress` before runtime edits.
 - Known blockers: None.
 
 ## Roadmap status
@@ -20,7 +20,7 @@ Allowed statuses: `Not started`, `Planned`, `In progress`, `Blocked`, `Complete`
 | F00 | Project foundation | Complete | `plans/F00_project_foundation.md` | `project.godot`, `scenes/main.tscn`, `.gitignore`, and `tests/verify_f00.gd` with its Godot UID sidecar. | Godot 4.7.1 version, headless import, F00 verification script, and headless main-scene smoke run passed; rendered default and resized frames visually checked. |
 | F01 | Player and endless-looking arena | Complete | `plans/F01_player_endless_arena.md` | `scenes/player.tscn`, `scripts/player.gd`, `scripts/arena_grid.gd`, and integration in `scenes/main.tscn`. | Import/parser, F00 regression, focused F01 verification, headless smoke run, and rendered default/traveled/resized frame inspection passed. |
 | F02 | Normal enemy and spawn system | Complete | `plans/F02_normal_enemy_spawn_system.md` | `scenes/enemy.tscn`, `scripts/enemy.gd`, `scripts/enemy_spawner.gd`, `scenes/main.tscn`, and `tests/verify_f02.gd` with Godot UID sidecars. | Import/parser, F00/F01 regressions, focused F02 verification, 600-iteration smoke run, diff check, and rendered origin/traveled frame inspection passed on 2026-08-31. |
-| F03 | Auto-combat, damage, and defeat | Not started | — | — | — |
+| F03 | Auto-combat, damage, and defeat | Planned | `plans/F03_auto_combat_damage_defeat.md` | — | Planning baseline passed on 2026-08-31: import/parser, F00–F02 checks, 600-iteration smoke run, and `git diff --check`. |
 | F04 | XP coins and five-level progression | Not started | — | — | — |
 | F05 | Upgrade choice UI and stat upgrades | Not started | — | — | — |
 | F06 | Combat ability upgrades | Not started | — | — | — |
@@ -67,4 +67,4 @@ Passing F00 commands on 2026-08-30:
 
 ## Latest handoff
 
-F02 is complete. The project now has one reusable direct-chasing normal enemy plus a camera-aware off-screen spawner with centralized tuning, a dedicated enemy container/group, and a hard active-enemy cap. All automated checks and rendered origin/traveled inspection passed on 2026-08-31. A subsequent manual play check identified exact enemy stacking; the roadmap now assigns lightweight enemy/enemy and enemy/player separation to F03 alongside contact damage. The next session should inspect this baseline and generate the F03 plan with that requirement; do not implement F03 without that plan or an explicit implementation request.
+F02 is complete and F03 is planned in `plans/F03_auto_combat_damage_defeat.md`. The plan covers nearest-target auto-fire, bounded projectiles, reusable enemy/player health and damage, contact invulnerability, lightweight enemy/enemy and enemy/player separation, defeat, and clean restart while keeping XP and later roadmap systems out of scope. The clean F02 baseline was revalidated on 2026-08-31 with headless import, F00–F02 checks, a 600-iteration main-scene smoke run, and `git diff --check`. The next session should implement only F03 and mark it `In progress` before changing runtime files.
