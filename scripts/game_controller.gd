@@ -303,7 +303,7 @@ func apply_world_pickup(pickup_type: StringName) -> int:
 		PICKUP_HEALTH:
 			return int(_player.call("heal", HEALTH_PICKUP_RESTORE))
 		PICKUP_MAGNET:
-			return _collect_all_xp_coins()
+			return _magnetize_all_xp_coins()
 		PICKUP_BOMB:
 			return _damage_all_normal_enemies()
 	return 0
@@ -426,20 +426,20 @@ func _find_xp_merge_target() -> Node2D:
 	return null
 
 
-func _collect_all_xp_coins() -> int:
+func _magnetize_all_xp_coins() -> int:
 	if not is_instance_valid(_xp_coin_container):
 		return 0
-	var collected_count := 0
+	var magnetized_count := 0
 	var coins := _xp_coin_container.get_children()
 	for coin: Node in coins:
 		if (
 			is_instance_valid(coin)
 			and not coin.is_queued_for_deletion()
-			and coin.has_method("collect")
-			and coin.call("collect")
+			and coin.has_method("activate_magnet")
+			and coin.call("activate_magnet")
 		):
-			collected_count += 1
-	return collected_count
+			magnetized_count += 1
+	return magnetized_count
 
 
 func _damage_all_normal_enemies() -> int:

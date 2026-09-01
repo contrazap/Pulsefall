@@ -93,6 +93,11 @@ func _verify_xp_coin(failures: Array[String]) -> void:
 	coin._physics_process(0.1)
 	if not coin.global_position.is_equal_approx(outside_position):
 		failures.append("A coin moved while outside its centralized attraction radius.")
+	if not coin.activate_magnet() or coin.activate_magnet() or not coin.is_magnetized():
+		failures.append("XP coin magnet activation was not one-shot and persistent.")
+	coin._physics_process(0.1)
+	if coin.global_position.distance_to(player.global_position) >= outside_position.distance_to(player.global_position):
+		failures.append("A magnetized coin outside normal attraction range did not fly toward the player.")
 
 	coin.global_position = player.global_position
 	if not coin.collect() or coin.collect():

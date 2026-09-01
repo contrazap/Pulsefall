@@ -172,15 +172,35 @@ func _verify_world_population_and_pickups(failures: Array[String]) -> void:
 		magnet_pickup.global_position = player.global_position
 		magnet_pickup.collect()
 		if (
+			main.get_active_xp_coin_count() != 1
+			or not distant_coin.is_magnetized()
+			or not distant_coin.global_position.is_equal_approx(distant_coin_position)
+			or progression.current_level != 1
+			or progression.current_xp != 0
+			or paused
+			or main.is_upgrade_choice_open()
+		):
+			failures.append("Magnet did not mark the active distant coin for visible travel without collecting it immediately.")
+		main.maximum_active_xp_coins = 2
+		var post_magnet_coin: Node2D = main.create_xp_drop(player.global_position + Vector2(950.0, 0.0), 4)
+		if post_magnet_coin == null or post_magnet_coin.is_magnetized():
+			failures.append("A coin created after Magnet incorrectly inherited the one-shot pickup effect.")
+		elif not post_magnet_coin.global_position.is_equal_approx(player.global_position + Vector2(950.0, 0.0)):
+			failures.append("The post-Magnet coin did not remain at its distant spawn position.")
+		if post_magnet_coin != null:
+			post_magnet_coin.free()
+		main.maximum_active_xp_coins = 1
+		distant_coin._physics_process(3.0)
+		if (
 			main.get_active_xp_coin_count() != 0
 			or progression.current_level != 2
 			or progression.current_xp != 3
 			or not paused
 			or not main.is_upgrade_choice_open()
 		):
-			failures.append("Magnet did not collect the full merged XP value through the ordered paused progression path.")
+			failures.append("A magnetized coin did not fly to the player and enter the normal ordered progression path on arrival.")
 		if population.can_process():
-			failures.append("World-population generation could process while Magnet opened an upgrade choice.")
+			failures.append("World-population generation could process after a magnetized coin opened an upgrade choice.")
 		for pickup: Node in pickups.get_children():
 			if not pickup.is_queued_for_deletion() and pickup.can_process():
 				failures.append("A pickup could still collect while an upgrade choice paused gameplay.")

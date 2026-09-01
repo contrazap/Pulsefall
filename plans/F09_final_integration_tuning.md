@@ -105,3 +105,4 @@ Fill this in during implementation:
 
 - 2026-09-01 user difficulty feedback reduced projectile speed from `720` to `480` and restored XP coins from the F09 viewport-wide `720` attraction radius to their short-range `150` default. The Magnet pickup remains the only global active-coin collection effect.
 - Focused F03/F04/F07 assertions now protect the slower projectile, short-range idle coin behavior, and Magnet-only global collection boundary. The full automated suite was re-run after the adjustment; the 171.50-second F09 run predates this harder tuning and was not represented as a new timing measurement.
+- Follow-up feedback changed Magnet from synchronous disappearance to visible travel: it snapshots current coins, activates persistent attraction beyond their normal radius, and lets each coin award XP only when it reaches the player. Coins spawned after the pickup remain unmagnetized.

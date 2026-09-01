@@ -9,6 +9,7 @@ signal collected(xp_value: int)
 
 var target: Node2D
 var _collected: bool = false
+var _magnetized: bool = false
 
 
 func _physics_process(delta: float) -> void:
@@ -18,7 +19,7 @@ func _physics_process(delta: float) -> void:
 	if distance <= collection_radius:
 		collect()
 		return
-	if distance > attraction_radius:
+	if distance > attraction_radius and not _magnetized:
 		return
 	var travel_distance := minf(movement_speed * delta, distance)
 	global_position += global_position.direction_to(target.global_position) * travel_distance
@@ -29,11 +30,19 @@ func _physics_process(delta: float) -> void:
 func configure(next_target: Node2D, value: int = 1) -> void:
 	target = next_target
 	xp_value = maxi(value, 1)
+	_magnetized = false
 
 
 func add_xp_value(amount: int) -> void:
 	if amount > 0 and not _collected:
 		xp_value += amount
+
+
+func activate_magnet() -> bool:
+	if _collected or _magnetized or not _has_valid_target():
+		return false
+	_magnetized = true
+	return true
 
 
 func collect() -> bool:
@@ -47,6 +56,10 @@ func collect() -> bool:
 
 func is_collected() -> bool:
 	return _collected
+
+
+func is_magnetized() -> bool:
+	return _magnetized
 
 
 func _has_valid_target() -> bool:
