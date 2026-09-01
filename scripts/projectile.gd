@@ -24,9 +24,12 @@ func _physics_process(delta: float) -> void:
 		queue_free()
 
 
-func configure(aim_direction: Vector2) -> void:
+func configure(aim_direction: Vector2, total_hit_allowance: int = 1) -> void:
 	direction = aim_direction.normalized() if not aim_direction.is_zero_approx() else Vector2.RIGHT
 	rotation = direction.angle()
+	hit_allowance = maxi(total_hit_allowance, 1)
+	remaining_hits = hit_allowance
+	_hit_instance_ids.clear()
 
 
 func apply_hit(body: Node) -> bool:

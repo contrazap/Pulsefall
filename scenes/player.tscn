@@ -1,8 +1,9 @@
-[gd_scene load_steps=5 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://scripts/player.gd" id="1_player"]
 [ext_resource type="Script" path="res://scripts/auto_weapon.gd" id="2_weapon"]
 [ext_resource type="PackedScene" path="res://scenes/projectile.tscn" id="3_projectile"]
+[ext_resource type="Script" path="res://scripts/nova_ability.gd" id="4_nova"]
 
 [sub_resource type="CircleShape2D" id="CircleShape_player"]
 radius = 18.0
@@ -36,3 +37,9 @@ script = ExtResource("2_weapon")
 projectile_scene = ExtResource("3_projectile")
 
 [node name="FireTimer" type="Timer" parent="AutoWeapon"]
+
+[node name="NovaAbility" type="Node2D" parent="."]
+z_index = -1
+script = ExtResource("4_nova")
+
+[node name="PulseTimer" type="Timer" parent="NovaAbility"]

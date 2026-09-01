@@ -4,10 +4,13 @@ extends Node
 @export_range(0.05, 60.0, 0.05) var fire_interval: float = 0.45
 @export var projectile_container_path: NodePath = NodePath("../../Projectiles")
 @export var target_group: StringName = &"normal_enemies"
+@export_range(0.0, 30.0, 0.5) var multishot_spread_degrees: float = 9.0
 
 var _owner_body: Node2D
 var _projectile_container: Node
 var _fire_timer: Timer
+var _multishot_rank: int = 0
+var _piercing_rank: int = 0
 
 
 func _ready() -> void:
@@ -28,14 +31,49 @@ func try_fire() -> Node2D:
 	var target := find_nearest_target(_owner_body.global_position, get_tree().get_nodes_in_group(target_group))
 	if target == null:
 		return null
-	var projectile := projectile_scene.instantiate() as Node2D
-	if projectile == null:
-		push_error("AutoWeapon's projectile_scene must instantiate a Node2D.")
-		return null
-	_projectile_container.add_child(projectile)
-	projectile.global_position = _owner_body.global_position
-	projectile.call("configure", _owner_body.global_position.direction_to(target.global_position))
-	return projectile
+	var base_direction := _owner_body.global_position.direction_to(target.global_position)
+	var first_projectile: Node2D
+	for angle_offset: float in get_volley_angle_offsets():
+		var projectile := projectile_scene.instantiate() as Node2D
+		if projectile == null:
+			push_error("AutoWeapon's projectile_scene must instantiate a Node2D.")
+			continue
+		_projectile_container.add_child(projectile)
+		projectile.global_position = _owner_body.global_position
+		projectile.call("configure", base_direction.rotated(deg_to_rad(angle_offset)), get_projectile_hit_allowance())
+		if first_projectile == null:
+			first_projectile = projectile
+	return first_projectile
+
+
+func set_combat_ranks(multishot_rank: int, piercing_rank: int) -> void:
+	_multishot_rank = clampi(multishot_rank, 0, 2)
+	_piercing_rank = clampi(piercing_rank, 0, 2)
+
+
+func get_multishot_rank() -> int:
+	return _multishot_rank
+
+
+func get_piercing_rank() -> int:
+	return _piercing_rank
+
+
+func get_projectile_count() -> int:
+	return 1 + _multishot_rank
+
+
+func get_projectile_hit_allowance() -> int:
+	return 1 + _piercing_rank
+
+
+func get_volley_angle_offsets() -> Array[float]:
+	var offsets: Array[float] = []
+	var projectile_count := get_projectile_count()
+	var first_offset := -multishot_spread_degrees * float(projectile_count - 1) * 0.5
+	for index: int in range(projectile_count):
+		offsets.append(first_offset + multishot_spread_degrees * float(index))
+	return offsets
 
 
 func find_nearest_target(origin: Vector2, candidates: Array[Node]) -> Node2D:

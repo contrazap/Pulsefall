@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=3]
+[gd_scene load_steps=15 format=3]
 
 [ext_resource type="Script" path="res://scripts/arena_grid.gd" id="1_grid"]
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="2_player"]
@@ -7,6 +7,10 @@
 [ext_resource type="Script" path="res://scripts/game_controller.gd" id="5_controller"]
 [ext_resource type="PackedScene" path="res://scenes/xp_coin.tscn" id="6_xp_coin"]
 [ext_resource type="Script" path="res://scripts/run_progression.gd" id="7_progression"]
+[ext_resource type="PackedScene" path="res://scenes/upgrade_choice_ui.tscn" id="8_upgrade_ui"]
+[ext_resource type="Script" path="res://scripts/world_population.gd" id="9_population"]
+[ext_resource type="PackedScene" path="res://scenes/world_decoration.tscn" id="10_decoration"]
+[ext_resource type="PackedScene" path="res://scenes/world_pickup.tscn" id="11_pickup"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_top_bar"]
 bg_color = Color(0.027, 0.047, 0.09, 0.92)
@@ -83,6 +87,8 @@ z_index = -10
 script = ExtResource("1_grid")
 target_path = NodePath("../Player")
 
+[node name="Decorations" type="Node2D" parent="World"]
+
 [node name="Player" parent="World" instance=ExtResource("2_player")]
 
 [node name="Enemies" type="Node2D" parent="World"]
@@ -90,6 +96,20 @@ target_path = NodePath("../Player")
 [node name="Projectiles" type="Node2D" parent="World"]
 
 [node name="XPCoins" type="Node2D" parent="World"]
+
+[node name="Pickups" type="Node2D" parent="World"]
+
+[node name="WorldPopulation" type="Node" parent="World"]
+script = ExtResource("9_population")
+decoration_scene = ExtResource("10_decoration")
+pickup_scene = ExtResource("11_pickup")
+target_path = NodePath("../Player")
+decoration_container_path = NodePath("../Decorations")
+pickup_container_path = NodePath("../Pickups")
+
+[node name="RefreshTimer" type="Timer" parent="World/WorldPopulation"]
+
+[node name="PickupSpawnTimer" type="Timer" parent="World/WorldPopulation"]
 
 [node name="EnemySpawner" type="Node" parent="World"]
 script = ExtResource("4_spawner")
@@ -101,6 +121,8 @@ enemy_container_path = NodePath("../Enemies")
 [node name="SpawnTimer" type="Timer" parent="World/EnemySpawner"]
 
 [node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="UpgradeChoiceUI" parent="HUD" instance=ExtResource("8_upgrade_ui")]
 
 [node name="Layout" type="Control" parent="HUD"]
 layout_mode = 3
