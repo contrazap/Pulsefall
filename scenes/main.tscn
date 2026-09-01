@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3]
+[gd_scene load_steps=17 format=3]
 
 [ext_resource type="Script" path="res://scripts/arena_grid.gd" id="1_grid"]
 [ext_resource type="PackedScene" path="res://scenes/player.tscn" id="2_player"]
@@ -11,6 +11,7 @@
 [ext_resource type="Script" path="res://scripts/world_population.gd" id="9_population"]
 [ext_resource type="PackedScene" path="res://scenes/world_decoration.tscn" id="10_decoration"]
 [ext_resource type="PackedScene" path="res://scenes/world_pickup.tscn" id="11_pickup"]
+[ext_resource type="PackedScene" path="res://scenes/boss.tscn" id="12_boss"]
 
 [sub_resource type="StyleBoxFlat" id="StyleBox_top_bar"]
 bg_color = Color(0.027, 0.047, 0.09, 0.92)
@@ -45,9 +46,17 @@ corner_radius_top_right = 4
 corner_radius_bottom_right = 4
 corner_radius_bottom_left = 4
 
+[sub_resource type="StyleBoxFlat" id="StyleBox_boss_fill"]
+bg_color = Color(1, 0.12, 0.58, 1)
+corner_radius_top_left = 4
+corner_radius_top_right = 4
+corner_radius_bottom_right = 4
+corner_radius_bottom_left = 4
+
 [node name="Main" type="Node2D"]
 script = ExtResource("5_controller")
 xp_coin_scene = ExtResource("6_xp_coin")
+boss_scene = ExtResource("12_boss")
 
 [node name="RunProgression" type="Node" parent="."]
 script = ExtResource("7_progression")
@@ -92,6 +101,8 @@ target_path = NodePath("../Player")
 [node name="Player" parent="World" instance=ExtResource("2_player")]
 
 [node name="Enemies" type="Node2D" parent="World"]
+
+[node name="Bosses" type="Node2D" parent="World"]
 
 [node name="Projectiles" type="Node2D" parent="World"]
 
@@ -238,6 +249,60 @@ theme_override_styles/fill = SubResource("StyleBox_xp_fill")
 show_percentage = false
 max_value = 5.0
 
+[node name="BossHealth" type="PanelContainer" parent="HUD/Layout"]
+visible = false
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -260.0
+offset_top = -126.0
+offset_right = 260.0
+offset_bottom = -68.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_styles/panel = SubResource("StyleBox_top_bar")
+
+[node name="Margin" type="MarginContainer" parent="HUD/Layout/BossHealth"]
+layout_mode = 2
+theme_override_constants/margin_left = 18
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 18
+theme_override_constants/margin_bottom = 8
+
+[node name="Content" type="VBoxContainer" parent="HUD/Layout/BossHealth/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 4
+
+[node name="Heading" type="HBoxContainer" parent="HUD/Layout/BossHealth/Margin/Content"]
+layout_mode = 2
+
+[node name="Caption" type="Label" parent="HUD/Layout/BossHealth/Margin/Content/Heading"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_colors/font_color = Color(1, 0.32, 0.7, 1)
+theme_override_font_sizes/font_size = 13
+text = "OVERSEER"
+
+[node name="Value" type="Label" parent="HUD/Layout/BossHealth/Margin/Content/Heading"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.88, 0.96, 1)
+theme_override_font_sizes/font_size = 13
+text = "600 / 600"
+horizontal_alignment = 2
+
+[node name="Bar" type="ProgressBar" parent="HUD/Layout/BossHealth/Margin/Content"]
+custom_minimum_size = Vector2(0, 14)
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/background = SubResource("StyleBox_xp_background")
+theme_override_styles/fill = SubResource("StyleBox_boss_fill")
+show_percentage = false
+max_value = 600.0
+value = 600.0
+
 [node name="DefeatOverlay" type="Control" parent="HUD"]
 process_mode = 3
 visible = false
@@ -306,6 +371,74 @@ theme_override_colors/font_color = Color(0.9, 0.99, 1, 1)
 theme_override_font_sizes/font_size = 19
 text = "RESTART RUN"
 
+[node name="VictoryOverlay" type="Control" parent="HUD"]
+process_mode = 3
+visible = false
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 0
+
+[node name="Dim" type="ColorRect" parent="HUD/VictoryOverlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+color = Color(0.008, 0.01, 0.025, 0.84)
+
+[node name="Center" type="CenterContainer" parent="HUD/VictoryOverlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Panel" type="PanelContainer" parent="HUD/VictoryOverlay/Center"]
+custom_minimum_size = Vector2(420, 250)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBox_top_bar")
+
+[node name="Margin" type="MarginContainer" parent="HUD/VictoryOverlay/Center/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 42
+theme_override_constants/margin_top = 34
+theme_override_constants/margin_right = 42
+theme_override_constants/margin_bottom = 34
+
+[node name="Content" type="VBoxContainer" parent="HUD/VictoryOverlay/Center/Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="Title" type="Label" parent="HUD/VictoryOverlay/Center/Panel/Margin/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.2, 1, 0.82, 1)
+theme_override_font_sizes/font_size = 38
+text = "PULSE ASCENDANT"
+horizontal_alignment = 1
+
+[node name="Message" type="Label" parent="HUD/VictoryOverlay/Center/Panel/Margin/Content"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.78, 0.92, 1, 1)
+theme_override_font_sizes/font_size = 17
+text = "The Overseer has fallen."
+horizontal_alignment = 1
+
+[node name="RestartButton" type="Button" parent="HUD/VictoryOverlay/Center/Panel/Margin/Content"]
+custom_minimum_size = Vector2(0, 52)
+layout_mode = 2
+process_mode = 3
+theme_override_colors/font_color = Color(0.9, 1, 0.98, 1)
+theme_override_font_sizes/font_size = 19
+text = "RESTART RUN"
+
 [node name="FoundationNote" type="Label" parent="HUD/Layout"]
 layout_mode = 1
 anchors_preset = 12
@@ -320,5 +453,5 @@ grow_horizontal = 2
 grow_vertical = 0
 theme_override_colors/font_color = Color(0.43, 0.57, 0.72, 0.85)
 theme_override_font_sizes/font_size = 13
-text = "FOUNDATION BUILD  •  MOVE: WASD / ARROW KEYS"
+text = "MOVE: WASD / ARROW KEYS  •  AUTO-FIRE ENABLED"
 horizontal_alignment = 1

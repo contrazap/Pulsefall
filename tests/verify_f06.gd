@@ -95,7 +95,7 @@ func _verify_combat_abilities(failures: Array[String]) -> void:
 		&"nova",
 	]
 	main.set_forced_combat_offers(forced_offers)
-	progression.add_xp(76)
+	progression.add_xp(180)
 	if not paused or main.get_pending_upgrade_count() != 5 or main.get_current_combat_offer() != &"multishot":
 		failures.append("Five queued level-ups did not open one paused stable Multishot offer.")
 	var first_offer_metadata := choice_ui.call("get_choice_metadata", &"combat") as Dictionary

@@ -12,7 +12,7 @@ enum SpawnSide {
 }
 
 @export var enemy_scene: PackedScene
-@export_range(0.1, 60.0, 0.05) var spawn_interval: float = 0.75
+@export_range(0.1, 60.0, 0.05) var spawn_interval: float = 0.85
 @export_range(1.0, 1024.0, 1.0) var offscreen_margin: float = 96.0
 @export_range(1, 500, 1) var maximum_active_enemies: int = 24
 @export var target_path: NodePath
@@ -23,6 +23,7 @@ var _target: Node2D
 var _camera: Camera2D
 var _enemy_container: Node
 var _spawn_timer: Timer
+var _spawning_enabled: bool = true
 
 
 func _ready() -> void:
@@ -33,7 +34,7 @@ func _ready() -> void:
 		return
 	_spawn_timer.wait_time = spawn_interval
 	_spawn_timer.timeout.connect(_on_spawn_timer_timeout)
-	_spawn_timer.start()
+	set_spawning_enabled(true)
 
 
 func spawn_enemy() -> Node2D:
@@ -63,11 +64,38 @@ func spawn_enemy() -> Node2D:
 
 func can_spawn_enemy() -> bool:
 	return (
-		enemy_scene != null
+		_spawning_enabled
+		and enemy_scene != null
 		and is_instance_valid(_target)
 		and is_instance_valid(_camera)
 		and is_instance_valid(_enemy_container)
 		and get_active_enemy_count() < maximum_active_enemies
+	)
+
+
+func set_spawning_enabled(enabled: bool) -> void:
+	_spawning_enabled = enabled
+	if _spawn_timer == null:
+		return
+	if _spawning_enabled:
+		_spawn_timer.start(spawn_interval)
+	else:
+		_spawn_timer.stop()
+
+
+func is_spawning_enabled() -> bool:
+	return _spawning_enabled
+
+
+func calculate_current_spawn_position(spawn_side: int = -1, edge_fraction: float = -1.0) -> Vector2:
+	if not is_instance_valid(_camera):
+		return Vector2.ZERO
+	return calculate_spawn_position(
+		_camera.get_screen_center_position(),
+		_camera.get_viewport_rect().size,
+		_camera.zoom,
+		spawn_side,
+		edge_fraction
 	)
 
 

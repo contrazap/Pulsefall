@@ -44,6 +44,7 @@ const ABILITY_METADATA: Dictionary = {
 }
 
 @export var xp_coin_scene: PackedScene
+@export var boss_scene: PackedScene
 @export_range(1, 500, 1) var maximum_active_xp_coins: int = 40
 
 var _player: Node
@@ -52,14 +53,22 @@ var _level_label: Label
 var _xp_label: Label
 var _xp_bar: ProgressBar
 var _defeat_overlay: Control
+var _victory_overlay: Control
+var _boss_health_hud: Control
+var _boss_health_bar: ProgressBar
+var _boss_health_value: Label
 var _upgrade_choice_ui: Control
 var _enemy_spawner: Node
+var _boss_container: Node2D
 var _xp_coin_container: Node
 var _progression: Node
 var _auto_weapon: Node
 var _nova_ability: Node
 var _world_population: Node
 var _defeated: bool = false
+var _victorious: bool = false
+var _boss_phase_started: bool = false
+var _boss: Node2D
 var _choice_open: bool = false
 var _pending_level_ups: Array[int] = []
 var _applied_selection_count: int = 0
@@ -80,14 +89,20 @@ func _ready() -> void:
 	_xp_label = get_node_or_null("HUD/Layout/TopBar/Margin/Stats/XP/Heading/Value") as Label
 	_xp_bar = get_node_or_null("HUD/Layout/TopBar/Margin/Stats/XP/Bar") as ProgressBar
 	_defeat_overlay = get_node_or_null("HUD/DefeatOverlay") as Control
+	_victory_overlay = get_node_or_null("HUD/VictoryOverlay") as Control
+	_boss_health_hud = get_node_or_null("HUD/Layout/BossHealth") as Control
+	_boss_health_bar = get_node_or_null("HUD/Layout/BossHealth/Margin/Content/Bar") as ProgressBar
+	_boss_health_value = get_node_or_null("HUD/Layout/BossHealth/Margin/Content/Heading/Value") as Label
 	_upgrade_choice_ui = get_node_or_null("HUD/UpgradeChoiceUI") as Control
 	_enemy_spawner = get_node_or_null("World/EnemySpawner")
+	_boss_container = get_node_or_null("World/Bosses") as Node2D
 	_xp_coin_container = get_node_or_null("World/XPCoins")
 	_progression = get_node_or_null("RunProgression")
 	_auto_weapon = get_node_or_null("World/Player/AutoWeapon")
 	_nova_ability = get_node_or_null("World/Player/NovaAbility")
 	_world_population = get_node_or_null("World/WorldPopulation")
-	var restart_button := get_node_or_null("HUD/DefeatOverlay/Center/Panel/Margin/Content/RestartButton") as Button
+	var defeat_restart_button := get_node_or_null("HUD/DefeatOverlay/Center/Panel/Margin/Content/RestartButton") as Button
+	var victory_restart_button := get_node_or_null("HUD/VictoryOverlay/Center/Panel/Margin/Content/RestartButton") as Button
 	if (
 		_player == null
 		or _health_label == null
@@ -95,16 +110,23 @@ func _ready() -> void:
 		or _xp_label == null
 		or _xp_bar == null
 		or _defeat_overlay == null
+		or _victory_overlay == null
+		or _boss_health_hud == null
+		or _boss_health_bar == null
+		or _boss_health_value == null
 		or _upgrade_choice_ui == null
 		or _enemy_spawner == null
+		or _boss_container == null
 		or _xp_coin_container == null
 		or _progression == null
 		or _auto_weapon == null
 		or _nova_ability == null
 		or _world_population == null
-		or restart_button == null
+		or defeat_restart_button == null
+		or victory_restart_button == null
+		or boss_scene == null
 	):
-		push_error("GameController requires the player, progression, world containers, HUD, and defeat controls.")
+		push_error("GameController requires its player, progression, world containers, boss scene, and terminal HUD controls.")
 		return
 	_player.health_changed.connect(_on_player_health_changed)
 	_player.died.connect(_on_player_died)
@@ -113,8 +135,11 @@ func _ready() -> void:
 	_progression.level_up.connect(_on_level_up)
 	_upgrade_choice_ui.connect(&"choice_selected", Callable(self, "_on_upgrade_choice_selected"))
 	_world_population.connect(&"pickup_collected", Callable(self, "_on_world_pickup_collected"))
-	restart_button.pressed.connect(restart_run)
+	defeat_restart_button.pressed.connect(restart_run)
+	victory_restart_button.pressed.connect(restart_run)
 	_defeat_overlay.hide()
+	_victory_overlay.hide()
+	_boss_health_hud.hide()
 	_upgrade_choice_ui.call("hide_choices")
 	_ability_rng.randomize()
 	_apply_combat_rank_effects()
@@ -128,7 +153,7 @@ func _ready() -> void:
 
 
 func _exit_tree() -> void:
-	if (_defeated or _choice_open) and get_tree() != null:
+	if (_defeated or _victorious or _choice_open) and get_tree() != null:
 		get_tree().paused = false
 
 
@@ -139,6 +164,18 @@ func restart_run() -> void:
 
 func is_defeated() -> bool:
 	return _defeated
+
+
+func is_victorious() -> bool:
+	return _victorious
+
+
+func is_boss_phase_started() -> bool:
+	return _boss_phase_started
+
+
+func get_active_boss() -> Node2D:
+	return _boss if is_instance_valid(_boss) and not _boss.is_queued_for_deletion() else null
 
 
 func is_upgrade_choice_open() -> bool:
@@ -198,7 +235,7 @@ func set_forced_combat_offers(ability_ids: Array[StringName]) -> void:
 
 func apply_upgrade_choice(choice_id: StringName, offered_level: int) -> bool:
 	if (
-		_defeated
+		_is_run_ended()
 		or not _choice_open
 		or _pending_level_ups.is_empty()
 		or not VALID_UPGRADE_CHOICES.has(choice_id)
@@ -222,6 +259,8 @@ func apply_upgrade_choice(choice_id: StringName, offered_level: int) -> bool:
 	_applied_selection_count += 1
 	_upgrade_choice_ui.call("hide_choices")
 	selection_applied.emit(choice_id, _applied_selection_count, offered_level)
+	if _applied_selection_count == MAXIMUM_UPGRADE_SELECTIONS:
+		start_boss_phase()
 	_show_next_upgrade_choice()
 	return true
 
@@ -258,7 +297,7 @@ func get_active_xp_coin_count() -> int:
 
 
 func apply_world_pickup(pickup_type: StringName) -> int:
-	if _defeated or not is_instance_valid(_player) or not _player.call("is_alive"):
+	if _is_run_ended() or not is_instance_valid(_player) or not _player.call("is_alive"):
 		return 0
 	match pickup_type:
 		PICKUP_HEALTH:
@@ -276,7 +315,7 @@ func _on_player_health_changed(current_health: int, maximum_health: int) -> void
 
 
 func _on_player_died() -> void:
-	if _defeated:
+	if _is_run_ended():
 		return
 	_defeated = true
 	_choice_open = false
@@ -284,6 +323,53 @@ func _on_player_died() -> void:
 	_current_combat_offer = &""
 	_upgrade_choice_ui.call("hide_choices")
 	_defeat_overlay.show()
+	get_tree().paused = true
+
+
+func start_boss_phase() -> Node2D:
+	if _boss_phase_started or _is_run_ended() or boss_scene == null:
+		return get_active_boss()
+	if _applied_selection_count < MAXIMUM_UPGRADE_SELECTIONS:
+		return null
+	_boss_phase_started = true
+	_enemy_spawner.call("set_spawning_enabled", false)
+	var next_boss := boss_scene.instantiate() as Node2D
+	if next_boss == null:
+		push_error("GameController's boss_scene must instantiate a Node2D.")
+		return null
+	_boss_container.add_child(next_boss)
+	var boss_spawn_position: Vector2 = _enemy_spawner.call("calculate_current_spawn_position")
+	next_boss.global_position = boss_spawn_position
+	if next_boss.has_method("set_target"):
+		next_boss.call("set_target", _player)
+	if next_boss.has_signal(&"health_changed"):
+		next_boss.connect(&"health_changed", Callable(self, "_on_boss_health_changed"))
+	if next_boss.has_signal(&"died"):
+		next_boss.connect(&"died", Callable(self, "_on_boss_died"))
+	_boss = next_boss
+	_on_boss_health_changed(next_boss.current_health, next_boss.maximum_health)
+	_boss_health_hud.show()
+	return next_boss
+
+
+func _on_boss_health_changed(current_health: int, maximum_health: int) -> void:
+	if not is_instance_valid(_boss_health_bar) or not is_instance_valid(_boss_health_value):
+		return
+	_boss_health_bar.max_value = float(maximum_health)
+	_boss_health_bar.value = float(current_health)
+	_boss_health_value.text = "%d / %d" % [current_health, maximum_health]
+
+
+func _on_boss_died(dead_boss: Node) -> void:
+	if _is_run_ended() or dead_boss != _boss:
+		return
+	_victorious = true
+	_choice_open = false
+	_pending_level_ups.clear()
+	_current_combat_offer = &""
+	_upgrade_choice_ui.call("hide_choices")
+	_boss_health_hud.hide()
+	_victory_overlay.show()
 	get_tree().paused = true
 
 
@@ -309,7 +395,7 @@ func _on_world_pickup_collected(pickup_type: StringName) -> void:
 
 
 func _on_level_up(level: int) -> void:
-	if _defeated or _applied_selection_count + _pending_level_ups.size() >= MAXIMUM_UPGRADE_SELECTIONS:
+	if _is_run_ended() or _applied_selection_count + _pending_level_ups.size() >= MAXIMUM_UPGRADE_SELECTIONS:
 		return
 	_pending_level_ups.append(level)
 	_show_next_upgrade_choice()
@@ -373,7 +459,7 @@ func _damage_all_normal_enemies() -> int:
 
 
 func _show_next_upgrade_choice() -> void:
-	if _defeated or _choice_open:
+	if _is_run_ended() or _choice_open:
 		return
 	if _pending_level_ups.is_empty():
 		_current_combat_offer = &""
@@ -392,6 +478,10 @@ func _show_next_upgrade_choice() -> void:
 		offer_metadata["title"],
 		offer_metadata["description"]
 	)
+
+
+func _is_run_ended() -> bool:
+	return _defeated or _victorious
 
 
 func _choose_combat_offer() -> StringName:

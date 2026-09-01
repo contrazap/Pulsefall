@@ -120,6 +120,8 @@ func _verify_targeting_and_projectiles(failures: Array[String]) -> void:
 	await process_frame
 	if projectile.movement_speed <= 0.0 or projectile.damage <= 0 or projectile.maximum_lifetime <= 0.0 or projectile.hit_allowance <= 0:
 		failures.append("Projectile speed, damage, lifetime, or hit allowance is not centralized and positive.")
+	if not is_equal_approx(projectile.movement_speed, 480.0):
+		failures.append("Projectile speed does not preserve the user-requested slower 480-unit tuning.")
 	projectile.configure(Vector2.RIGHT)
 	var start_position := projectile.global_position
 	projectile._physics_process(0.25)

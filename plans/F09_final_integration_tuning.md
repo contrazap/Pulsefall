@@ -1,9 +1,9 @@
 # F09 — Final integration and tuning
 
-- Status: Planned
+- Status: Complete
 - Roadmap dependency: F08
 - Created: 2026-09-01
-- Completed: —
+- Completed: 2026-09-01
 
 ## Objective
 
@@ -11,11 +11,11 @@ Validate the complete Pulsefall run from a clean launch through five upgrades an
 
 ## Preflight and existing state
 
-- Do not begin implementation until F07 and F08 are both `Complete`, their focused checks pass, and the project contains the planned bounded world population, pickup effects, boss transition, boss health UI, victory flow, and restart behavior. Reconcile this plan with their actual APIs before editing.
+- F07 and F08 are `Complete`; their focused checks pass. The project contains bounded `WorldPopulation` collections, controller-owned pickup effects, a guarded fifth-selection boss transition, shared `combat_targets`, boss health UI, mutually exclusive terminal states, and clean scene-reload restart behavior.
 - F00–F06 currently provide movement and an endless-looking arena; capped normal enemies, projectiles, and XP coins; damage, defeat, and restart; five finite XP thresholds; paused queued upgrade choices; Vitality, Haste, Multishot, Piercing, and Nova. Existing combat and progression tunables are exported or centralized.
 - `GAME_PLAN.md` defines the cross-feature acceptance criteria and a normal successful run target of about 3–5 minutes. F09 may tune existing values to meet that target but must not add scope.
-- Planning baseline on 2026-09-01 used Godot `4.7.1.stable.official.a13da4feb`: headless import/parser, `verify_f00.gd` through `verify_f06.gd`, a 600-frame main-scene smoke run, and `git diff --check` all passed. F07/F08 evidence does not exist yet and is an execution gate, not a planning claim.
-- The working tree contains ongoing earlier-feature work and another feature may be handled in parallel; preserve all unrelated changes.
+- Implementation baseline on 2026-09-01 used Godot `4.7.1.stable.official.a13da4feb`: headless import/parser and `verify_f00.gd` through `verify_f08.gd` all passed.
+- The working tree contains the completed, uncommitted F08 changes only; preserve them while adding the final integration evidence.
 
 ## In scope
 
@@ -53,18 +53,18 @@ Validate the complete Pulsefall run from a clean launch through five upgrades an
 
 ## Acceptance criteria
 
-- [ ] A clean launch enters an active base-state run with no parser, missing-resource, runtime, or orphan-node errors and no retained upgrades, progression, entities, boss state, or overlays.
-- [ ] Using normal play, the player can collect enough XP to receive and resolve exactly five paused upgrade screens; XP carry-over and the game world remain correct across every pause.
-- [ ] Every upgrade has an immediately visible gameplay effect and retains its defined formula/rank behavior: repeatable Vitality and Haste, and two ranks each for Multishot, Piercing, and Nova without max-rank reoffers.
-- [ ] The boss does not appear before the fifth selection is applied, appears exactly once immediately afterward, stops normal spawning as specified by F08, remains compatible with existing normal enemies and abilities, and presents a readable updating health bar and spiked boss visual.
-- [ ] Player health reaching zero produces only the paused defeat state; boss death produces only the paused victory state. Each ending's restart control reloads the same clean initial state without retained stats, ranks, XP, selections, entities, timers, pause state, boss state, or UI.
-- [ ] Normal enemy, projectile, XP coin, decoration, world-pickup, and boss counts stay within their configured bounds during sustained combat and long-distance travel. Transient effects are reused or cleaned up, including through pauses, terminal states, and restart.
-- [ ] Enemy separation remains soft: crowds can bunch but do not collapse into one unreadable stack, sit directly on the player, or create hard body blocking that traps movement.
-- [ ] Health, Magnet, and Bomb pickups remain distinguishable and perform their exact F07 effects; Bomb cannot instantly defeat the boss, and pickup/decor placement remains relevant without spawning beneath the player or growing without limit.
-- [ ] At least one successful full run performed with normal controls and without debug/test shortcuts is recorded. Its active gameplay duration is approximately 3–5 minutes, difficulty remains survivable with attentive movement, and the fifth-upgrade-to-boss transition does not create an unintended dead period or unavoidable damage spike.
-- [ ] At 1152×648 and 800×450, the player, enemies, projectiles, XP, pickups, Nova, boss spikes, HUD, choice cards, boss bar, and defeat/victory controls remain legible without critical clipping or overlap; the complete loop is understandable with placeholder visuals.
-- [ ] Headless import, every `verify_f00.gd` through `verify_f09.gd` check, the configured main-scene smoke run, and `git diff --check` pass on the final tree, with exact evidence recorded.
-- [ ] F09 introduces no new feature scope, third-party dependency, external art requirement, pathfinding/obstacles, broad refactor, save/meta system, or undocumented debug shortcut.
+- [x] A clean launch enters an active base-state run with no parser, missing-resource, runtime, or orphan-node errors and no retained upgrades, progression, entities, boss state, or overlays.
+- [x] Using normal play, the player can collect enough XP to receive and resolve exactly five paused upgrade screens; XP carry-over and the game world remain correct across every pause.
+- [x] Every upgrade has an immediately visible gameplay effect and retains its defined formula/rank behavior: repeatable Vitality and Haste, and two ranks each for Multishot, Piercing, and Nova without max-rank reoffers.
+- [x] The boss does not appear before the fifth selection is applied, appears exactly once immediately afterward, stops normal spawning as specified by F08, remains compatible with existing normal enemies and abilities, and presents a readable updating health bar and spiked boss visual.
+- [x] Player health reaching zero produces only the paused defeat state; boss death produces only the paused victory state. Each ending's restart control reloads the same clean initial state without retained stats, ranks, XP, selections, entities, timers, pause state, boss state, or UI.
+- [x] Normal enemy, projectile, XP coin, decoration, world-pickup, and boss counts stay within their configured bounds during sustained combat and long-distance travel. Transient effects are reused or cleaned up, including through pauses, terminal states, and restart.
+- [x] Enemy separation remains soft: crowds can bunch but do not collapse into one unreadable stack, sit directly on the player, or create hard body blocking that traps movement.
+- [x] Health, Magnet, and Bomb pickups remain distinguishable and perform their exact F07 effects; Bomb cannot instantly defeat the boss, and pickup/decor placement remains relevant without spawning beneath the player or growing without limit.
+- [x] At least one successful full run performed with normal controls and without debug/test shortcuts is recorded. Its active gameplay duration is approximately 3–5 minutes, difficulty remains survivable with attentive movement, and the fifth-upgrade-to-boss transition does not create an unintended dead period or unavoidable damage spike.
+- [x] At 1152×648 and 800×450, the player, enemies, projectiles, XP, pickups, Nova, boss spikes, HUD, choice cards, boss bar, and defeat/victory controls remain legible without critical clipping or overlap; the complete loop is understandable with placeholder visuals.
+- [x] Headless import, every `verify_f00.gd` through `verify_f09.gd` check, the configured main-scene smoke run, and `git diff --check` pass on the final tree, with exact evidence recorded.
+- [x] F09 introduces no new feature scope, third-party dependency, external art requirement, pathfinding/obstacles, broad refactor, save/meta system, or undocumented debug shortcut.
 
 ## Verification plan
 
@@ -94,9 +94,14 @@ Validate the complete Pulsefall run from a clean launch through five upgrades an
 
 Fill this in during implementation:
 
-- Actual files changed:
-- Commands/tests and results:
-- Measured full-run evidence and final key tuning values:
-- Manual checks performed:
-- Deviations from plan:
-- Remaining risks or follow-up:
+- Actual files changed: Added `tests/verify_f09.gd` with its Godot UID sidecar; updated `scripts/run_progression.gd`, `scripts/enemy_spawner.gd`, `scenes/xp_coin.tscn`, `scenes/boss.tscn`, the tuned-value assertions in `tests/verify_f04.gd`–`verify_f08.gd`, the footer in `scenes/main.tscn`, `README.md`, this plan, and `PROGRESS.md`.
+- Commands/tests and results: Godot 4.7.1 headless import/parser passed; `verify_f00.gd` through `verify_f09.gd` all passed; the configured main scene completed the planned 3,600-frame headless smoke run without parser/runtime/orphan errors; `git diff --check` passed.
+- Measured full-run evidence and F09 completion values: A visible 1152×648 run driven only by documented WASD and real mouse-choice window messages selected Combat at 13.08, 28.86, 56.20, 96.73, and 156.49 active seconds, then won at 171.50 active / 173.23 wall seconds with 76/100 health. The completion baseline used XP thresholds `[10, 20, 32, 48, 70]`, normal spawn interval `0.85s`, XP attraction radius `720`, normal health `30`, projectile damage `15`, and boss health `900`; the post-completion section below records the current harder overrides.
+- Manual checks performed: Visually inspected live/rendered 1152×648 active combat and victory plus 800×450 upgrade, eight-to-ten-enemy dense combat, defeat, tuned 900/900 boss bar/spikes, and victory frames. A separate 800×450 Vitality-only normal-controls run reached three selections and a readable ten-enemy defeat at 88.50 active seconds. The runs used OS-delivered documented controls rather than gameplay/debug APIs; they were not hand-operated. Deterministic F09 verification exercised both restart buttons and clean post-ending state.
+- Deviations from plan: The successful strongest-build run measured 2:51.5 active time, nine seconds below three minutes but within the stated approximate target. Evidence showed the original 150-unit XP attraction could stall progression after off-screen auto-kills; widening existing attraction was paired with longer finite thresholds instead of making enemies damage-spongy. Temporary input/observer/capture harnesses were removed before final verification.
+- Remaining risks or follow-up: Balance evidence covers one successful all-Combat path and one losing Vitality-only path, not exhaustive human play. A future hand-operated playtest may refine values, but no roadmap feature or known runtime blocker remains.
+
+## Post-completion tuning
+
+- 2026-09-01 user difficulty feedback reduced projectile speed from `720` to `480` and restored XP coins from the F09 viewport-wide `720` attraction radius to their short-range `150` default. The Magnet pickup remains the only global active-coin collection effect.
+- Focused F03/F04/F07 assertions now protect the slower projectile, short-range idle coin behavior, and Magnet-only global collection boundary. The full automated suite was re-run after the adjustment; the 171.50-second F09 run predates this harder tuning and was not represented as a new timing measurement.

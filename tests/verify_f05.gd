@@ -155,7 +155,7 @@ func _verify_main_queue_pause_selection_and_restart(failures: Array[String]) -> 
 	var base_maximum_health: int = player.maximum_health
 	var base_speed: float = player.movement_speed
 
-	progression.add_xp(5)
+	progression.add_xp(10)
 	if (
 		not paused
 		or not main.is_upgrade_choice_open()
@@ -192,7 +192,7 @@ func _verify_main_queue_pause_selection_and_restart(failures: Array[String]) -> 
 	if choice_ui.call("select_choice", &"vitality"):
 		failures.append("A closed choice screen accepted a duplicate Vitality selection.")
 
-	progression.add_xp(9)
+	progression.add_xp(20)
 	if main.apply_upgrade_choice(&"vitality", 2):
 		failures.append("A stale level-2 callback consumed the pending level-3 selection.")
 	if main.get_pending_upgrade_count() != 1 or main.get_applied_selection_count() != 1:
@@ -207,7 +207,7 @@ func _verify_main_queue_pause_selection_and_restart(failures: Array[String]) -> 
 	var projectile_damage_before: int = paused_projectile.damage
 	var projectile_hits_before: int = paused_projectile.hit_allowance
 	var fire_interval_before: float = fire_timer.wait_time
-	progression.add_xp(62)
+	progression.add_xp(150)
 	if not paused or main.get_pending_upgrade_count() != 3 or choice_ui.call("get_offered_level") != 4:
 		failures.append("A multi-threshold XP award did not queue three ordered paused choices.")
 	if not choice_ui.call("select_choice", &"combat"):

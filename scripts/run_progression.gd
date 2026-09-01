@@ -3,7 +3,7 @@ extends Node
 signal progress_changed(level: int, current_xp: int, required_xp: int, completed: bool)
 signal level_up(level: int)
 
-const XP_THRESHOLDS: Array[int] = [5, 9, 14, 20, 28]
+const XP_THRESHOLDS: Array[int] = [10, 20, 32, 48, 70]
 
 var current_level: int = 1
 var current_xp: int = 0

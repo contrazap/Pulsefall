@@ -1,9 +1,9 @@
 # F08 — Boss phase and victory
 
-- Status: Planned
+- Status: Complete
 - Roadmap dependency: F07
 - Created: 2026-09-01
-- Completed: —
+- Completed: 2026-09-01
 
 ## Objective
 
@@ -11,12 +11,12 @@ After the fifth upgrade is applied, transition the active run into a single-boss
 
 ## Preflight and existing state
 
-- At planning time F06 is complete and F07 is being implemented in parallel. Do not begin F08 runtime work until F07 is complete, its focused verification passes, and its actual pickup/population APIs have been reconciled with this plan.
+- F07 is complete. Its focused verification passes, `WorldPopulation` emits `pickup_collected`, and `GameController.apply_world_pickup()` snapshots only `normal_enemies` for Bomb; the planned boss/shared-target boundary is current.
 - `scripts/game_controller.gd` owns the five-selection count, applies an upgrade before emitting `selection_applied`, coordinates run pause/defeat/restart, and connects normal-enemy death to XP drops. The fifth successful selection is the authoritative boss-phase trigger.
 - `scripts/enemy.gd` already provides reusable chase, contact damage, health signals, `take_damage()`, and death behavior. `scripts/enemy_spawner.gd` provides camera-aware off-screen placement but currently starts and continues normal spawning without an explicit phase-stop API.
 - Normal enemies are currently the only members of `normal_enemies`; both `scripts/auto_weapon.gd` and `scripts/nova_ability.gd` target that group. F08 needs a separate shared combat-target group for normal enemies and the boss so F07 Bomb can remain normal-enemy-only.
 - `scenes/main.tscn` has the live HUD and a paused defeat/restart overlay but no boss scene, boss health bar, victory overlay, or boss-phase state.
-- With Godot `4.7.1.stable.official.a13da4feb`, the pre-F07 implementation baseline passed headless import/parser, F00–F06 verification, a 600-frame main-scene smoke run, and `git diff --check` on 2026-09-01. Preserve the existing dirty working tree and parallel F07 work.
+- With Godot `4.7.1.stable.official.a13da4feb`, the implementation baseline passed headless import/parser and F00–F07 verification on 2026-09-01. The worktree was clean before F08 documentation changes.
 
 ## In scope
 
@@ -59,18 +59,18 @@ After the fifth upgrade is applied, transition the active run into a single-boss
 
 ## Acceptance criteria
 
-- [ ] No boss exists and normal spawning remains enabled before five upgrade selections have been applied. The fifth valid selection applies its chosen upgrade first, then starts the boss phase exactly once without a sixth choice or duplicate boss.
-- [ ] The boss spawns just outside the current viewport, chases the player, deals contact damage through the existing invulnerability rules, and takes projectile damage through the reused enemy implementation.
-- [ ] The boss has centralized values distinct from a normal enemy for maximum health, size/collision, color, movement speed, and contact damage, plus a clearly readable geometric ring/crown of spikes.
-- [ ] Beginning the boss phase stops future normal-enemy spawning and leaves already-active normal enemies alive. Repeated transition calls or timer timeouts cannot resume spawning or create another boss.
-- [ ] AutoWeapon targets the nearest living normal enemy or boss through a shared combat-target group. Nova damages an in-range boss as well as in-range normal enemies, while F07 Bomb continues to affect only `normal_enemies` and cannot damage the boss.
-- [ ] A boss health bar is hidden before the phase, appears with the boss’s correct current/maximum health, updates immediately after damage, and remains readable at the supported default and 800×450 window sizes.
-- [ ] Killing a normal enemy during the boss phase still follows the normal XP-drop path and does not cause victory. Killing the boss creates no normal-enemy XP drop, hides the boss health bar, pauses gameplay/F07 population activity, and shows the victory overlay exactly once.
-- [ ] Player death before boss death still shows defeat, not victory. Once either terminal state is established, later damage/death callbacks cannot replace it with the other result or reopen upgrade UI.
-- [ ] The victory overlay includes a working restart button. Restart restores a fresh non-boss run with normal spawning enabled, no boss or terminal overlay, hidden boss health, and no retained progression, upgrades, entities, pickup effects, or pause state.
-- [ ] F00–F07 movement, arena, bounded spawning/populations, combat, XP, five-choice progression, upgrades, pickups, defeat, pause, and restart behavior remain functional.
-- [ ] The project imports/parses, F00–F07 regressions and focused F08 checks pass, and the configured main scene smoke-runs without parser, missing-resource, runtime, or orphan-node errors.
-- [ ] No F09 tuning/polish, extra boss mechanics, save/meta-progression, third-party dependency, pathfinding, or unrelated feature is introduced.
+- [x] No boss exists and normal spawning remains enabled before five upgrade selections have been applied. The fifth valid selection applies its chosen upgrade first, then starts the boss phase exactly once without a sixth choice or duplicate boss.
+- [x] The boss spawns just outside the current viewport, chases the player, deals contact damage through the existing invulnerability rules, and takes projectile damage through the reused enemy implementation.
+- [x] The boss has centralized values distinct from a normal enemy for maximum health, size/collision, color, movement speed, and contact damage, plus a clearly readable geometric ring/crown of spikes.
+- [x] Beginning the boss phase stops future normal-enemy spawning and leaves already-active normal enemies alive. Repeated transition calls or timer timeouts cannot resume spawning or create another boss.
+- [x] AutoWeapon targets the nearest living normal enemy or boss through a shared combat-target group. Nova damages an in-range boss as well as in-range normal enemies, while F07 Bomb continues to affect only `normal_enemies` and cannot damage the boss.
+- [x] A boss health bar is hidden before the phase, appears with the boss’s correct current/maximum health, updates immediately after damage, and remains readable at the supported default and 800×450 window sizes.
+- [x] Killing a normal enemy during the boss phase still follows the normal XP-drop path and does not cause victory. Killing the boss creates no normal-enemy XP drop, hides the boss health bar, pauses gameplay/F07 population activity, and shows the victory overlay exactly once.
+- [x] Player death before boss death still shows defeat, not victory. Once either terminal state is established, later damage/death callbacks cannot replace it with the other result or reopen upgrade UI.
+- [x] The victory overlay includes a working restart button. Restart restores a fresh non-boss run with normal spawning enabled, no boss or terminal overlay, hidden boss health, and no retained progression, upgrades, entities, pickup effects, or pause state.
+- [x] F00–F07 movement, arena, bounded spawning/populations, combat, XP, five-choice progression, upgrades, pickups, defeat, pause, and restart behavior remain functional.
+- [x] The project imports/parses, F00–F07 regressions and focused F08 checks pass, and the configured main scene smoke-runs without parser, missing-resource, runtime, or orphan-node errors.
+- [x] No F09 tuning/polish, extra boss mechanics, save/meta-progression, third-party dependency, pathfinding, or unrelated feature is introduced.
 
 ## Verification plan
 
@@ -110,8 +110,8 @@ After the fifth upgrade is applied, transition the active run into a single-boss
 
 Fill this in during implementation:
 
-- Actual files changed:
-- Commands/tests and results:
-- Manual checks performed:
-- Deviations from plan:
-- Remaining risks or follow-up:
+- Actual files changed: Added `scenes/boss.tscn` and `tests/verify_f08.gd` with its Godot UID sidecar; updated `scenes/enemy.tscn`, `scenes/main.tscn`, `scripts/auto_weapon.gd`, `scripts/enemy_spawner.gd`, `scripts/game_controller.gd`, `scripts/nova_ability.gd`, this plan, and `PROGRESS.md`.
+- Commands/tests and results: Godot 4.7.1 headless import/parser passed; `verify_f00.gd` through `verify_f08.gd` all passed; the configured main scene completed a 600-frame headless smoke run without errors; `git diff --check` passed.
+- Manual checks performed: Rendered and visually inspected 800×450 boss frames at 600/600 and 384/600 health plus the victory frame. The spiked silhouette, live bar, dimmed victory presentation, and restart button were readable. No hands-on playthrough was performed; deterministic F08 verification exercised the full five-choice transition, damage paths, both terminal outcomes, and restart.
+- Deviations from plan: No separate boss script was needed; `scenes/boss.tscn` reuses `scripts/enemy.gd` directly. The boss health panel uses the existing stretched 1280×720 logical canvas, verified at the 800×450 window override.
+- Remaining risks or follow-up: F09 should perform the intended hands-on full-run regression and balance/tuning pass; current boss health, speed, contact damage, and encounter duration are implementation values rather than final tuning.

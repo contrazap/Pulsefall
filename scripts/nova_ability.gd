@@ -8,7 +8,7 @@ signal pulse_emitted(rank: int, damaged_enemy_count: int)
 @export_range(0.1, 60.0, 0.1) var rank_one_interval: float = 5.0
 @export_range(0.1, 60.0, 0.1) var rank_two_interval: float = 3.5
 @export_range(0.05, 2.0, 0.05) var visual_duration: float = 0.35
-@export var target_group: StringName = &"normal_enemies"
+@export var target_group: StringName = &"combat_targets"
 
 var rank: int = 0
 var _pulse_timer: Timer

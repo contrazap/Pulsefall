@@ -4,11 +4,11 @@ Last documentation update: 2026-09-01
 
 ## Current state
 
-- Overall status: F00–F07 complete; F08–F09 planned.
-- Last completed feature: F07 — Procedural decorations and world pickups.
-- Current feature: F08 — Boss phase and victory is planned.
-- Next feature: F08 — Boss phase and victory.
-- Next action: Revalidate `plans/F08_boss_phase_victory.md` against the completed F07 population/pickup APIs, then implement F08.
+- Overall status: F00–F09 complete; roadmap complete.
+- Last completed feature: F09 — Final integration and tuning.
+- Current feature: No active roadmap feature.
+- Next feature: None — the planned prototype roadmap is complete.
+- Next action: Playtest the post-roadmap slower-projectile and Magnet-only collection tuning; request further balance changes if desired.
 - Known blockers: None.
 
 ## Roadmap status
@@ -25,8 +25,8 @@ Allowed statuses: `Not started`, `Planned`, `In progress`, `Blocked`, `Complete`
 | F05 | Upgrade choice UI and stat upgrades | Complete | `plans/F05_upgrade_choice_ui_stat_upgrades.md` | Responsive paused three-choice overlay, ordered pending-choice queue, repeatable Vitality/Haste, guarded combat placeholder seam, applied-selection count/signal, defeat compatibility, and clean restart. | Godot 4.7.1 import/parser, F00–F05 checks, 600-frame smoke run, `git diff --check`, and rendered 1152×648/800×450 choice-screen inspection passed on 2026-09-01. |
 | F06 | Combat ability upgrades | Complete | `plans/F06_combat_ability_upgrades.md` | Stable eligible ability offers, independent two-rank state, centered Multishot volleys, per-shot Piercing allowances, and a player-owned reusable Nova timer/pulse. | Godot 4.7.1 import/parser, F00–F06 checks, 600-frame smoke run, `git diff --check`, and rendered 800×450 offer/1152×648 combat inspection passed on 2026-09-01. |
 | F07 | Procedural decorations and world pickups | Complete | `plans/F07_procedural_decorations_world_pickups.md` | Recycled 28-decoration population, capped shuffled-bag Health/Magnet/Bomb pickups, focused player healing, and controller-owned XP/normal-enemy effects. | Godot 4.7.1 import/parser, F00–F07 checks, 600-frame smoke run, `git diff --check`, and rendered 1152×648 origin/traveled inspection passed on 2026-09-01. |
-| F08 | Boss phase and victory | Planned | `plans/F08_boss_phase_victory.md` | — | Pre-F07 implementation planning baseline passed Godot 4.7.1 import/parser, F00–F06 checks, a 600-frame smoke run, and `git diff --check` on 2026-09-01; implementation remains gated on F07 completion. |
-| F09 | Final integration and tuning | Planned | `plans/F09_final_integration_tuning.md` | — | Planning baseline passed Godot 4.7.1 import/parser, F00–F06 checks, a 600-frame smoke run, and `git diff --check` on 2026-09-01; implementation remains gated on completed F07/F08 evidence. |
+| F08 | Boss phase and victory | Complete | `plans/F08_boss_phase_victory.md` | Shared combat targets, guarded fifth-choice transition, stopped normal spawning, reused spiked boss, live health HUD, mutually exclusive victory/defeat, and clean restart. | Godot 4.7.1 import/parser, F00–F08 checks, 600-frame smoke run, `git diff --check`, and rendered 800×450 boss/damaged/victory inspection passed on 2026-09-01. |
+| F09 | Final integration and tuning | Complete | `plans/F09_final_integration_tuning.md` | End-to-end state/stress regression, finite progression pacing, tuned boss health, short-range XP with Magnet-only global collection, final footer/readme cleanup, and recorded normal-controls runs. | Godot 4.7.1 import/parser, F00–F09 checks, 3,600-frame smoke run, `git diff --check`, measured pre-adjustment runs, and 1152×648/800×450 visual inspection passed on 2026-09-01; the full automated matrix was re-run after post-roadmap difficulty tuning. |
 
 ## Verification baseline
 
@@ -46,6 +46,12 @@ F06 replaced the placeholder combat card with one stable random non-maxed Multis
 
 F07 added a draw-only recycled population of 28 subtle neon decorations plus a capped set of three procedurally placed Health, Magnet, and Bomb pickups. Health uses a clamped signal-emitting player heal, Magnet snapshots active XP coins and invokes their existing idempotent collection path, and Bomb snapshots only `normal_enemies` and uses their normal damage/death/XP-drop path. On 2026-09-01, import/parser, F00–F07 verification, a 600-frame gameplay smoke run, and `git diff --check` passed. Rendered 1152×648 origin and far-traveled frames were inspected successfully; focused verification also proved annulus placement, node recycling, all caps, type readability, one-shot collection, merged XP carry-over and upgrade pause, boss-safe group filtering, defeat pause, replenishment, and clean restart.
 
+F08 added the fifth-selection boss transition, stopped future normal spawning while retaining active normals, a shared `combat_targets` boundary for AutoWeapon/Nova, a reused enemy scene with distinct spiked boss tuning, a responsive live boss-health HUD, and guarded paused victory/restart behavior. On 2026-09-01, import/parser, F00–F08 verification, a 600-frame gameplay smoke run, and `git diff --check` passed. Rendered 800×450 full/damaged boss and victory frames were inspected successfully; focused verification also proved no early/duplicate boss, off-screen placement, Bomb immunity, normal XP coexistence, projectile/Nova/contact paths, terminal-state precedence, and clean restart.
+
+F09 added the complete-loop and population-stress regression, then tuned only existing values after visible normal-control evidence exposed off-screen XP collection stalls and an unfair high-health experiment. Its completion baseline used thresholds `[10, 20, 32, 48, 70]`, a `0.85s` spawn interval, `720` XP attraction, normal health `30`, projectile damage `15`, and boss health `900`. A 1152×648 all-Combat run won at 171.50 active seconds with 76/100 health; an 800×450 Vitality-only run reached a readable ten-enemy defeat at 88.50 seconds. Import/parser, F00–F09, the 3,600-frame smoke run, `git diff --check`, and visual checks passed on 2026-09-01.
+
+Post-roadmap user difficulty feedback on 2026-09-01 reduced projectile speed from `720` to `480` and restored XP attraction from the temporary viewport-wide `720` tuning to the short-range `150` default. Distant coins now remain in place until approached, while collecting the Magnet pickup still snapshots and collects every active coin. The F03/F04/F07 focused checks protect this boundary; the full suite and smoke run were re-run after the change.
+
 Local Godot environment verified on 2026-08-30:
 
 - GUI executable: `C:\MyFiles\Godot\Godot_v4.7.1-stable_win64.exe`
@@ -63,7 +69,8 @@ Passing F00 commands on 2026-08-30:
 ## Active blockers and known issues
 
 - No blockers.
-- No known runtime issue blocks F08 implementation. Its planned assumptions should now be revalidated against F07's `WorldPopulation` signal/API and controller-owned `normal_enemies` Bomb filter; balance remains subject to F09 tuning.
+- No known runtime blockers remain.
+- Final balance evidence is representative rather than exhaustive: the successful and losing normal-controls runs were automated through real window input, not hand-operated, and predate the harder post-roadmap projectile/coin adjustment.
 
 ## Decision log
 
@@ -77,4 +84,4 @@ Passing F00 commands on 2026-08-30:
 
 ## Latest handoff
 
-F00–F07 are complete and F08–F09 are planned in their feature files. F07's final verification passed import/parser, F00–F07 checks, a 600-frame smoke run, `git diff --check`, and rendered origin/far-traveled inspection on 2026-09-01. Revalidate `plans/F08_boss_phase_victory.md` against the completed `WorldPopulation` pickup signal and controller-owned Bomb filter, then implement the fifth-selection boss transition, shared combat targeting, boss health UI, victory, and restart.
+F00–F09 are complete and the planned Pulsefall prototype roadmap is finished. Post-roadmap difficulty feedback is implemented with `480` projectile speed and short-range `150` XP attraction; the Magnet pickup remains the only global coin collector. The final tree passes Godot 4.7.1 import/parser, `verify_f00.gd` through `verify_f09.gd`, a 3,600-frame main-scene smoke run, and `git diff --check`. The recorded timing run predates this harder adjustment, so the next useful action is a fresh hand-operated balance playtest.

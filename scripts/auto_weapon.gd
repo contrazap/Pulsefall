@@ -3,7 +3,7 @@ extends Node
 @export var projectile_scene: PackedScene
 @export_range(0.05, 60.0, 0.05) var fire_interval: float = 0.45
 @export var projectile_container_path: NodePath = NodePath("../../Projectiles")
-@export var target_group: StringName = &"normal_enemies"
+@export var target_group: StringName = &"combat_targets"
 @export_range(0.0, 30.0, 0.5) var multishot_spread_degrees: float = 9.0
 
 var _owner_body: Node2D

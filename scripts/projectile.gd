@@ -1,6 +1,6 @@
 extends Area2D
 
-@export_range(1.0, 3000.0, 1.0) var movement_speed: float = 720.0
+@export_range(1.0, 3000.0, 1.0) var movement_speed: float = 480.0
 @export_range(1, 10000, 1) var damage: int = 15
 @export_range(0.05, 30.0, 0.05) var maximum_lifetime: float = 2.0
 @export_range(1, 100, 1) var hit_allowance: int = 1

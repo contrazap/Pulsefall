@@ -156,10 +156,15 @@ func _verify_world_population_and_pickups(failures: Array[String]) -> void:
 	await process_frame
 
 	main.maximum_active_xp_coins = 1
-	main.create_xp_drop(player.global_position + Vector2(900.0, 0.0), 3)
-	main.create_xp_drop(player.global_position + Vector2(920.0, 0.0), 5)
-	if main.get_active_xp_coin_count() != 1 or coins.get_child(0).xp_value != 8:
-		failures.append("The Magnet setup did not preserve a merged eight-XP coin.")
+	main.create_xp_drop(player.global_position + Vector2(900.0, 0.0), 5)
+	main.create_xp_drop(player.global_position + Vector2(920.0, 0.0), 8)
+	if main.get_active_xp_coin_count() != 1 or coins.get_child(0).xp_value != 13:
+		failures.append("The Magnet setup did not preserve a merged thirteen-XP coin.")
+	var distant_coin := coins.get_child(0) as Node2D
+	var distant_coin_position := distant_coin.global_position
+	distant_coin._physics_process(0.5)
+	if not distant_coin.global_position.is_equal_approx(distant_coin_position):
+		failures.append("A distant XP coin moved before the Magnet pickup was collected.")
 	var magnet_pickup := _find_pickup(pickups, &"magnet")
 	if magnet_pickup == null:
 		failures.append("No Magnet pickup was available for effect verification.")

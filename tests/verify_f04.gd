@@ -35,18 +35,18 @@ func _verify_progression(failures: Array[String]) -> void:
 	progression.level_up.connect(_record_level_up)
 	_observed_level_ups.clear()
 
-	if progression.get_thresholds() != [5, 9, 14, 20, 28]:
+	if progression.get_thresholds() != [10, 20, 32, 48, 70]:
 		failures.append("Run progression does not expose exactly the five required XP thresholds.")
-	if progression.current_level != 1 or progression.current_xp != 0 or progression.get_required_xp() != 5:
-		failures.append("Run progression does not start at level 1 with 0 / 5 XP.")
-	if progression.add_xp(30) != 3:
+	if progression.current_level != 1 or progression.current_xp != 0 or progression.get_required_xp() != 10:
+		failures.append("Run progression does not start at level 1 with 0 / 10 XP.")
+	if progression.add_xp(65) != 3:
 		failures.append("One XP award did not cross every eligible threshold.")
-	if progression.current_level != 4 or progression.current_xp != 2 or progression.get_required_xp() != 20:
+	if progression.current_level != 4 or progression.current_xp != 3 or progression.get_required_xp() != 48:
 		failures.append("Threshold carry-over was not preserved after a multi-level XP award.")
 	if _observed_level_ups != [2, 3, 4]:
 		failures.append("Multi-level XP did not emit one ordered event per crossed threshold.")
 
-	progression.add_xp(46)
+	progression.add_xp(115)
 	if not progression.completed or progression.current_level != 6 or progression.current_xp != 0:
 		failures.append("Progression did not stop in a clear completed level-6 state after threshold five.")
 	if progression.get_required_xp() != 0 or _observed_level_ups != [2, 3, 4, 5, 6]:
@@ -79,6 +79,8 @@ func _verify_xp_coin(failures: Array[String]) -> void:
 
 	if coin.xp_value != 3 or coin.attraction_radius <= 0.0 or coin.collection_radius <= 0.0 or coin.movement_speed <= 0.0:
 		failures.append("The XP coin lacks positive centralized value, attraction, collection, or speed tuning.")
+	if not is_equal_approx(coin.attraction_radius, 150.0):
+		failures.append("XP coins do not preserve the short-range 150-unit attraction tuning.")
 	if coin.get_node_or_null("Body") == null:
 		failures.append("The XP coin does not have a visible repository-native geometric body.")
 	var distance_before: float = coin.global_position.distance_to(player.global_position)
@@ -138,8 +140,8 @@ func _verify_main_integration_cap_pause_and_restart(failures: Array[String]) -> 
 		return
 	spawn_timer.stop()
 	fire_timer.stop()
-	if level_label.text != "1" or xp_label.text != "0 / 5" or xp_bar.max_value != 5.0 or xp_bar.value != 0.0:
-		failures.append("The live progression HUD does not initialize to level 1 and 0 / 5 XP.")
+	if level_label.text != "1" or xp_label.text != "0 / 10" or xp_bar.max_value != 10.0 or xp_bar.value != 0.0:
+		failures.append("The live progression HUD does not initialize to level 1 and 0 / 10 XP.")
 
 	var enemy := spawner.spawn_enemy() as Node2D
 	if enemy == null:
@@ -180,12 +182,12 @@ func _verify_main_integration_cap_pause_and_restart(failures: Array[String]) -> 
 	collected_coin._physics_process(0.0)
 	if progression.current_xp != collected_value:
 		failures.append("Coin collection did not route the coin's full value into run progression.")
-	if xp_label.text != "%d / 5" % collected_value or xp_bar.value != float(collected_value):
+	if xp_label.text != "%d / 10" % collected_value or xp_bar.value != float(collected_value):
 		failures.append("Coin collection did not update the XP HUD immediately.")
 	await process_frame
 
 	progression.reset_progression()
-	progression.add_xp(76)
+	progression.add_xp(180)
 	if level_label.text != "6" or xp_label.text != "COMPLETE" or xp_bar.value != xp_bar.max_value:
 		failures.append("The HUD does not show a clear completed state after the fifth threshold.")
 	progression.add_xp(10)
@@ -217,7 +219,7 @@ func _verify_main_integration_cap_pause_and_restart(failures: Array[String]) -> 
 	var restarted_xp := restarted_main.get_node_or_null("HUD/Layout/TopBar/Margin/Stats/XP/Heading/Value") as Label
 	if paused or restarted_progression.current_level != 1 or restarted_progression.current_xp != 0 or restarted_progression.completed:
 		failures.append("Restart retained pause or progression state from the prior run.")
-	if restarted_level.text != "1" or restarted_xp.text != "0 / 5":
+	if restarted_level.text != "1" or restarted_xp.text != "0 / 10":
 		failures.append("Restart did not restore the initial level and XP HUD.")
 	if restarted_coins.get_child_count() != 0 or restarted_enemies.get_child_count() != 0 or restarted_projectiles.get_child_count() != 0:
 		failures.append("Restart retained enemies, projectiles, or XP coins from the prior run.")
